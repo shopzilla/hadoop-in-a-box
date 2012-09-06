@@ -65,15 +65,15 @@ public class DFSCluster {
     private void importHDFSDirectory(final File file) throws Exception {
         Path path = new Path(hdfsRoot, "/" + localRoot.toURI().relativize(file.toURI()).getPath());
         if (file.isDirectory()) {
-            miniDFSCluster.getFileSystem().mkdirs(path);
-            miniDFSCluster.getFileSystem().makeQualified(path);
+            getFileSystem().mkdirs(path);
+            getFileSystem().makeQualified(path);
             for (File child : file.listFiles()) {
                 importHDFSDirectory(child);
             }
         }
         else {
-            miniDFSCluster.getFileSystem().copyFromLocalFile(false, true, new Path(file.getAbsolutePath()), path);
-            miniDFSCluster.getFileSystem().makeQualified(path);
+            getFileSystem().copyFromLocalFile(false, true, new Path(file.getAbsolutePath()), path);
+            getFileSystem().makeQualified(path);
         }
     }
 

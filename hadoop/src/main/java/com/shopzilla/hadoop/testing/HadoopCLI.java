@@ -25,6 +25,7 @@ import static java.lang.String.format;
  */
 public class HadoopCLI {
 
+    private File localRoot;
     private FsShell shell;
     private File logDirectory = new File("/tmp/minimrcluster/logs");
     private Configuration configuration;
@@ -47,7 +48,7 @@ public class HadoopCLI {
     @PostConstruct
     public void start() {
         dfsCluster = new DFSCluster();
-        dfsCluster.setLocalRoot(new File("/Users/161331/hdfs/"));
+        dfsCluster.setLocalRoot(localRoot);
         dfsCluster.setConfiguration(configuration);
         dfsCluster.start();
 
@@ -80,14 +81,25 @@ public class HadoopCLI {
         return configuration;
     }
 
+    public void setLocalRoot(final File localRoot) {
+        this.localRoot = localRoot;
+    }
+
     public void setLogDirectory(final File logDirectory) {
         this.logDirectory = logDirectory;
     }
 
     public static void main(final String[] args) throws Exception {
+
+        if (args.length != 1) {
+            System.err.println("Usage: ./hdp /path/to/local/hdfs/root");
+            System.exit(1);
+        }
+
         final Scanner scanner = new Scanner(System.in);
 
         final HadoopCLI hadoopCLI = new HadoopCLI();
+        hadoopCLI.setLocalRoot(new File(args[0]));
         final File logDirectory = new File("/tmp/minimrcluster/logs");
         hadoopCLI.setLogDirectory(logDirectory);
 
