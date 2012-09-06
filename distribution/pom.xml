@@ -34,6 +34,23 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.3</version>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <configuration>
+              <tasks>
+                <copy file="${project.build.directory}/${project.build.finalName}-distribution.tar.gz" tofile="${project.build.directory}/hadoop-in-a-box.tgz" overwrite="true" verbose="true"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 

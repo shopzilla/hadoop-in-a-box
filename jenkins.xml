@@ -1,136 +1,162 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <maven2-moduleset>
-  <actions/>
-  <description/>
-  <logRotator>
-    <daysToKeep>7</daysToKeep>
-    <numToKeep>25</numToKeep>
-    <artifactDaysToKeep>4</artifactDaysToKeep>
-    <artifactNumToKeep>10</artifactNumToKeep>
-  </logRotator>
-  <keepDependencies>false</keepDependencies>
-  <rootModule>
-    <groupId>com.shopzilla.hadoop.testing</groupId>
-    <artifactId>hadoop-in-a-box</artifactId>
-  </rootModule>
-  <goals>-U clean deploy -Denv=ci</goals>
-  <defaultGoals>-U clean deploy -Denv=ci</defaultGoals>
-  <mavenName>maven-2.2.1</mavenName>
-  <aggregatorStyleBuild>true</aggregatorStyleBuild>
-  <incrementalBuild>false</incrementalBuild>
-  <usePrivateRepository>false</usePrivateRepository>
-  <ignoreUpstremChanges>false</ignoreUpstremChanges>
-  <archivingDisabled>false</archivingDisabled>
-  <resolveDependencies>false</resolveDependencies>
-  <processPlugins>false</processPlugins>
-  <mavenValidationLevel>-1</mavenValidationLevel>
-  <runHeadless>false</runHeadless>
-  <properties>
-    <hudson.plugins.batch__task.BatchTaskProperty>
-      <tasks>
-        <hudson.plugins.batch__task.BatchTask>
-          <name>archive artifact</name>
-          <script>/home/sitebuild/jenkins/scripts/ex_archive_artifact.py hadoop-in-a-box</script>
-        </hudson.plugins.batch__task.BatchTask>
-      </tasks>
-    </hudson.plugins.batch__task.BatchTaskProperty>
-    <hudson.plugins.heavy__job.HeavyJobProperty>
-      <weight>1</weight>
-    </hudson.plugins.heavy__job.HeavyJobProperty>
-    <de.pellepelster.jenkins.walldisplay.WallDisplayJobProperty/>
-  </properties>
-  <scm class="hudson.plugins.git.GitSCM">
-    <configVersion>2</configVersion>
-    <userRemoteConfigs>
-      <hudson.plugins.git.UserRemoteConfig>
-        <name>origin</name>
-        <refspec>+refs/heads/*:refs/remotes/origin/*</refspec>
-        <url>GIT_REPOSITORY</url>
-      </hudson.plugins.git.UserRemoteConfig>
-    </userRemoteConfigs>
-    <branches>
-      <hudson.plugins.git.BranchSpec>
-        <name>GIT_BRANCH</name>
-      </hudson.plugins.git.BranchSpec>
-    </branches>
-    <recursiveSubmodules>false</recursiveSubmodules>
-    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-    <authorOrCommitter>true</authorOrCommitter>
-    <clean>false</clean>
-    <wipeOutWorkspace>false</wipeOutWorkspace>
-    <pruneBranches>false</pruneBranches>
-    <buildChooser class="hudson.plugins.git.util.DefaultBuildChooser"/>
-    <gitTool>Default</gitTool>
-    <browser class="hudson.plugins.git.browser.GitoriousWeb">
-      <url>GIT_URL</url>
-    </browser>
-    <submoduleCfg class="list"/>
-    <relativeTargetDir/>
-    <excludedRegions/>
-    <excludedUsers/>
-    <gitConfigName/>
-    <gitConfigEmail/>
-    <skipTag>false</skipTag>
-    <scmName/>
-  </scm>
-  <quietPeriod>5</quietPeriod>
-  <canRoam>true</canRoam>
-  <disabled>false</disabled>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <jdk>JDK 6u24</jdk>
-  <triggers class="vector"/>
-  <concurrentBuild>false</concurrentBuild>
-  <reporters>
-    <hudson.maven.reporters.MavenMailer>
-      <recipients>USER_EMAIL</recipients>
-      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
-      <sendToIndividuals>false</sendToIndividuals>
-    </hudson.maven.reporters.MavenMailer>
-  </reporters>
-  <publishers>
-    <hudson.plugins.batch__task.BatchTaskInvoker>
-      <configs>
-        <hudson.plugins.batch__task.BatchTaskInvoker_-Config>
-          <project>PROJECT_NAME</project>
-          <task>archive artifact</task>
-        </hudson.plugins.batch__task.BatchTaskInvoker_-Config>
-      </configs>
-      <threshold>
-        <name>UNSTABLE</name>
-        <ordinal>1</ordinal>
-        <color>YELLOW</color>
-      </threshold>
-    </hudson.plugins.batch__task.BatchTaskInvoker>
-    <hudson.plugins.jabber.im.transport.JabberPublisher>
-      <targets>
-        <hudson.plugins.im.GroupChatIMMessageTarget>
-          <name>ta@conference.shopzilla.com</name>
-        </hudson.plugins.im.GroupChatIMMessageTarget>
-      </targets>
-      <strategy>ALL</strategy>
-      <notifyOnBuildStart>false</notifyOnBuildStart>
-      <notifySuspects>false</notifySuspects>
-      <notifyCulprits>false</notifyCulprits>
-      <notifyFixers>false</notifyFixers>
-      <notifyUpstreamCommitters>false</notifyUpstreamCommitters>
-      <buildToChatNotifier class="hudson.plugins.im.build_notify.DefaultBuildToChatNotifier"/>
-      <matrixMultiplier>ONLY_CONFIGURATIONS</matrixMultiplier>
-    </hudson.plugins.jabber.im.transport.JabberPublisher>
-  </publishers>
-  <buildWrappers>
-    <org.jvnet.hudson.plugins.port__allocator.PortAllocator>
-      <ports>
-        <org.jvnet.hudson.plugins.port__allocator.DefaultPortType>
-          <name>HTTP_PORT</name>
-        </org.jvnet.hudson.plugins.port__allocator.DefaultPortType>
-        <org.jvnet.hudson.plugins.port__allocator.DefaultPortType>
-          <name>AJP_PORT</name>
-        </org.jvnet.hudson.plugins.port__allocator.DefaultPortType>
-        <org.jvnet.hudson.plugins.port__allocator.DefaultPortType>
-          <name>RMI_PORT</name>
-        </org.jvnet.hudson.plugins.port__allocator.DefaultPortType>
-      </ports>
-    </org.jvnet.hudson.plugins.port__allocator.PortAllocator>
-  </buildWrappers>
+<actions/>
+<description/>
+<logRotator>
+  <daysToKeep>7</daysToKeep>
+  <numToKeep>25</numToKeep>
+  <artifactDaysToKeep>4</artifactDaysToKeep>
+  <artifactNumToKeep>10</artifactNumToKeep>
+</logRotator>
+<keepDependencies>false</keepDependencies>
+<rootModule>
+  <groupId>com.shopzilla.hadoop.testing</groupId>
+  <artifactId>hadoop-in-a-box</artifactId>
+</rootModule>
+<goals>-U clean deploy</goals>
+<defaultGoals>-U clean deploy</defaultGoals>
+<mavenName>maven-2.2.1</mavenName>
+<aggregatorStyleBuild>true</aggregatorStyleBuild>
+<incrementalBuild>false</incrementalBuild>
+<usePrivateRepository>false</usePrivateRepository>
+<ignoreUpstremChanges>false</ignoreUpstremChanges>
+<archivingDisabled>false</archivingDisabled>
+<resolveDependencies>false</resolveDependencies>
+<processPlugins>false</processPlugins>
+<mavenValidationLevel>-1</mavenValidationLevel>
+<runHeadless>false</runHeadless>
+<properties>
+  <hudson.plugins.batch__task.BatchTaskProperty>
+    <tasks>
+      <hudson.plugins.batch__task.BatchTask>
+        <name>archive deployment tgz</name>
+        <script>/home/sitebuild/jenkins/scripts/archive_artifact.py --archivefilemask "keyword-quality-distribution.tgz" hadoop-in-a-box</script>
+      </hudson.plugins.batch__task.BatchTask>
+      <hudson.plugins.batch__task.BatchTask>
+        <name>archive hadoop standalone jar</name>
+        <script>/home/sitebuild/jenkins/scripts/archive_artifact.py --archivefilemask "hadoop-standalone-*-all.jar" hadoop-standalone</script>
+      </hudson.plugins.batch__task.BatchTask>
+    </tasks>
+  </hudson.plugins.batch__task.BatchTaskProperty>
+  <hudson.plugins.heavy__job.HeavyJobProperty>
+    <weight>1</weight>
+  </hudson.plugins.heavy__job.HeavyJobProperty>
+  <de.pellepelster.jenkins.walldisplay.WallDisplayJobProperty/>
+</properties>
+<scm class="hudson.plugins.git.GitSCM">
+  <configVersion>2</configVersion>
+  <userRemoteConfigs>
+    <hudson.plugins.git.UserRemoteConfig>
+      <name>origin</name>
+      <refspec>+refs/heads/*:refs/remotes/origin/*</refspec>
+      <url>ssh://git@gitorious.shopzilla.com/ta/keyword-quality.git</url>
+    </hudson.plugins.git.UserRemoteConfig>
+  </userRemoteConfigs>
+  <branches>
+    <hudson.plugins.git.BranchSpec>
+      <name>GIT_BRANCH</name>
+    </hudson.plugins.git.BranchSpec>
+  </branches>
+  <recursiveSubmodules>false</recursiveSubmodules>
+  <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+  <authorOrCommitter>true</authorOrCommitter>
+  <clean>false</clean>
+  <wipeOutWorkspace>false</wipeOutWorkspace>
+  <pruneBranches>false</pruneBranches>
+  <buildChooser class="hudson.plugins.git.util.DefaultBuildChooser"/>
+  <gitTool>Default</gitTool>
+  <browser class="hudson.plugins.git.browser.GitoriousWeb">
+    <url>GIT_URL</url>
+  </browser>
+  <submoduleCfg class="list"/>
+  <relativeTargetDir/>
+  <excludedRegions/>
+  <excludedUsers/>
+  <gitConfigName/>
+  <gitConfigEmail/>
+  <skipTag>false</skipTag>
+  <scmName/>
+</scm>
+<quietPeriod>5</quietPeriod>
+<canRoam>true</canRoam>
+<disabled>false</disabled>
+<blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+<blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+<jdk>JDK 6u24</jdk>
+<triggers class="vector"/>
+<concurrentBuild>false</concurrentBuild>
+<reporters>
+  <hudson.maven.reporters.MavenMailer>
+    <recipients>USER_EMAIL</recipients>
+    <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+    <sendToIndividuals>false</sendToIndividuals>
+  </hudson.maven.reporters.MavenMailer>
+</reporters>
+<publishers>
+  <!--
+    Disable sonar plugin for now, JWL
+      <hudson.plugins.sonar.SonarPublisher>
+        <configVersion>1</configVersion>
+        <branch/>
+        <language/>
+        <mavenOpts/>
+        <jobAdditionalProperties/>
+        <triggers>
+          <scmBuilds>true</scmBuilds>
+          <timerBuilds>true</timerBuilds>
+          <userBuilds>true</userBuilds>
+          <snapshotDependencyBuilds>true</snapshotDependencyBuilds>
+          <skipIfBuildFails>false</skipIfBuildFails>
+        </triggers>
+      </hudson.plugins.sonar.SonarPublisher>
+  -->
+  <hudson.plugins.batch__task.BatchTaskInvoker>
+    <configs>
+      <hudson.plugins.batch__task.BatchTaskInvoker_-Config>
+        <project>PROJECT_NAME</project>
+        <task>archive deployment tgz</task>
+      </hudson.plugins.batch__task.BatchTaskInvoker_-Config>
+      <hudson.plugins.batch__task.BatchTaskInvoker_-Config>
+        <project>PROJECT_NAME</project>
+        <task>archive workflow jar</task>
+      </hudson.plugins.batch__task.BatchTaskInvoker_-Config>
+    </configs>
+    <threshold>
+      <name>UNSTABLE</name>
+      <ordinal>1</ordinal>
+      <color>YELLOW</color>
+    </threshold>
+  </hudson.plugins.batch__task.BatchTaskInvoker>
+  <hudson.plugins.jabber.im.transport.JabberPublisher>
+    <targets>
+      <hudson.plugins.im.GroupChatIMMessageTarget>
+        <name>ta@conference.shopzilla.com</name>
+      </hudson.plugins.im.GroupChatIMMessageTarget>
+    </targets>
+    <strategy>ALL</strategy>
+    <notifyOnBuildStart>false</notifyOnBuildStart>
+    <notifySuspects>false</notifySuspects>
+    <notifyCulprits>false</notifyCulprits>
+    <notifyFixers>false</notifyFixers>
+    <notifyUpstreamCommitters>false</notifyUpstreamCommitters>
+    <buildToChatNotifier class="hudson.plugins.im.build_notify.DefaultBuildToChatNotifier"/>
+    <matrixMultiplier>ONLY_CONFIGURATIONS</matrixMultiplier>
+  </hudson.plugins.jabber.im.transport.JabberPublisher>
+</publishers>
+<buildWrappers>
+  <org.jvnet.hudson.plugins.port__allocator.PortAllocator>
+    <ports>
+      <org.jvnet.hudson.plugins.port__allocator.DefaultPortType>
+        <name>HTTP_PORT</name>
+      </org.jvnet.hudson.plugins.port__allocator.DefaultPortType>
+      <org.jvnet.hudson.plugins.port__allocator.DefaultPortType>
+        <name>AJP_PORT</name>
+      </org.jvnet.hudson.plugins.port__allocator.DefaultPortType>
+      <org.jvnet.hudson.plugins.port__allocator.DefaultPortType>
+        <name>RMI_PORT</name>
+      </org.jvnet.hudson.plugins.port__allocator.DefaultPortType>
+    </ports>
+  </org.jvnet.hudson.plugins.port__allocator.PortAllocator>
+</buildWrappers>
 </maven2-moduleset>
+
