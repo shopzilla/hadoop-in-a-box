@@ -30,7 +30,7 @@
     <tasks>
       <hudson.plugins.batch__task.BatchTask>
         <name>archive deployment tgz</name>
-        <script>/home/sitebuild/jenkins/scripts/archive_artifact.py --archivefilemask "keyword-quality-distribution.tgz" hadoop-in-a-box</script>
+        <script>/home/sitebuild/jenkins/scripts/archive_artifact.py --archivefilemask "hadoop-in-a-box-distribution.tgz" hadoop-in-a-box</script>
       </hudson.plugins.batch__task.BatchTask>
       <hudson.plugins.batch__task.BatchTask>
         <name>archive hadoop standalone jar</name>
@@ -49,7 +49,7 @@
     <hudson.plugins.git.UserRemoteConfig>
       <name>origin</name>
       <refspec>+refs/heads/*:refs/remotes/origin/*</refspec>
-      <url>ssh://git@gitorious.shopzilla.com/ta/keyword-quality.git</url>
+      <url>ssh://git@gitorious.shopzilla.com/ta/hadoop-in-a-box.git</url>
     </hudson.plugins.git.UserRemoteConfig>
   </userRemoteConfigs>
   <branches>
@@ -93,23 +93,6 @@
   </hudson.maven.reporters.MavenMailer>
 </reporters>
 <publishers>
-  <!--
-    Disable sonar plugin for now, JWL
-      <hudson.plugins.sonar.SonarPublisher>
-        <configVersion>1</configVersion>
-        <branch/>
-        <language/>
-        <mavenOpts/>
-        <jobAdditionalProperties/>
-        <triggers>
-          <scmBuilds>true</scmBuilds>
-          <timerBuilds>true</timerBuilds>
-          <userBuilds>true</userBuilds>
-          <snapshotDependencyBuilds>true</snapshotDependencyBuilds>
-          <skipIfBuildFails>false</skipIfBuildFails>
-        </triggers>
-      </hudson.plugins.sonar.SonarPublisher>
-  -->
   <hudson.plugins.batch__task.BatchTaskInvoker>
     <configs>
       <hudson.plugins.batch__task.BatchTaskInvoker_-Config>
@@ -118,7 +101,7 @@
       </hudson.plugins.batch__task.BatchTaskInvoker_-Config>
       <hudson.plugins.batch__task.BatchTaskInvoker_-Config>
         <project>PROJECT_NAME</project>
-        <task>archive workflow jar</task>
+        <task>archive hadoop standalone jar</task>
       </hudson.plugins.batch__task.BatchTaskInvoker_-Config>
     </configs>
     <threshold>
