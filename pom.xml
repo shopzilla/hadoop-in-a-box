@@ -19,6 +19,7 @@
   <modules>
     <module>hadoop</module>
     <module>hive</module>
+    <module>distribution</module>
   </modules>
 
   <properties>
@@ -32,6 +33,12 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.shopzilla.hadoop.testing</groupId>
+        <artifactId>hadoop-standalone</artifactId>
+        <version>${project.version}</version>
+        <classifier>all</classifier>
+      </dependency>
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>

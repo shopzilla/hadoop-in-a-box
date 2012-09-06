@@ -24,6 +24,7 @@ public class JobTracker {
     public void start() {
         try {
             miniMrCluster = new MiniMRCluster(numTaskTrackers, dfsNameNode, 1);
+            System.out.println(miniMrCluster.getJobTrackerRunner().getJobTrackerInfoPort());
 
         } catch (final Exception ex) {
             throw new RuntimeException(ex);
