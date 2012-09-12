@@ -27,6 +27,8 @@ import java.io.InputStreamReader;
  */
 public class DFSCluster {
 
+    private static final int DEFAULT_NUMBER_OF_DATA_NODES = 4;
+
     private Configuration configuration;
     private MiniDFSCluster miniDFSCluster;
     private Path hdfsRoot;
@@ -40,7 +42,7 @@ public class DFSCluster {
     public void start() {
         try {
             this.hdfsRoot = new Path(localRoot.getName());
-            miniDFSCluster = new MiniDFSCluster(configuration, 2, true, null);
+            miniDFSCluster = new MiniDFSCluster(configuration, DEFAULT_NUMBER_OF_DATA_NODES, true, null);
 
             /*hiveServer = createHiveServer();
           new Thread(new Runnable() {
@@ -63,7 +65,7 @@ public class DFSCluster {
     }
 
     private void importHDFSDirectory(final File file) throws Exception {
-        Path path = new Path(hdfsRoot, "/" + localRoot.toURI().relativize(file.toURI()).getPath());
+        Path path = new Path(hdfsRoot, File.separator + localRoot.toURI().relativize(file.toURI()).getPath());
         if (file.isDirectory()) {
             getFileSystem().mkdirs(path);
             getFileSystem().makeQualified(path);

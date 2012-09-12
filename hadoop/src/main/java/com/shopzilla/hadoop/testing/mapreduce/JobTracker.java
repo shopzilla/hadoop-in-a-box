@@ -18,17 +18,20 @@ public class JobTracker {
 
     private String dfsNameNode;
     private MiniMRCluster miniMrCluster;
-    private int numTaskTrackers = 2;
+    private int numTaskTrackers = 4;
 
     @PostConstruct
     public void start() {
         try {
             miniMrCluster = new MiniMRCluster(numTaskTrackers, dfsNameNode, 1);
-            System.out.println(miniMrCluster.getJobTrackerRunner().getJobTrackerInfoPort());
 
         } catch (final Exception ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    public MiniMRCluster.JobTrackerRunner getJobTrackerRunner() {
+        return miniMrCluster.getJobTrackerRunner();
     }
 
     @PreDestroy

@@ -40,6 +40,12 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jline</groupId>
+      <artifactId>jline</artifactId>
+      <version>1.0</version>
     </dependency>
   </dependencies>
 
@@ -68,9 +74,9 @@
           <finalName>hadoop-standalone-${project.version}</finalName>
           <filters>
             <filter>
-              <artifact>*:*</artifact>
+              <artifact>org.apache.hadoop:hadoop-core</artifact>
               <excludes>
-                <exclude>webapps/*</exclude>
+                <exclude>**/webapps/**</exclude>
               </excludes>
             </filter>
           </filters>

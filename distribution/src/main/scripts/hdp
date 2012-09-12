@@ -1,3 +1,2 @@
 CWD=`dirname $0`
-
-CLASSPATH=$CWD/webapps java -jar $CWD/lib/hadoop-standalone-*.jar $@
+java $JAVA_OPTS -jar $CWD/lib/hadoop-standalone-*.jar $@

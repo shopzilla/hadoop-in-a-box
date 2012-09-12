@@ -5,7 +5,7 @@
   <formats>
     <format>tar.gz</format>
   </formats>
-  <baseDirectory>hadoop-standalone</baseDirectory>
+  <baseDirectory>hadoop-in-a-box</baseDirectory>
   <dependencySets>
     <dependencySet>
       <outputDirectory>/lib</outputDirectory>
@@ -24,12 +24,12 @@
         <include>*</include>
       </includes>
     </fileSet>
-    <fileSet>
-      <directory>${basedir}/../hadoop/src/main/webapps/</directory>
-      <outputDirectory>/webapps/</outputDirectory>
-      <includes>
-        <include>*</include>
-      </includes>
-    </fileSet>
+    <!--<fileSet>-->
+      <!--<directory>${basedir}/../hadoop/src/main/webapps/</directory>-->
+      <!--<outputDirectory>/webapps/</outputDirectory>-->
+      <!--<includes>-->
+        <!--<include>*</include>-->
+      <!--</includes>-->
+    <!--</fileSet>-->
   </fileSets>
 </assembly>
