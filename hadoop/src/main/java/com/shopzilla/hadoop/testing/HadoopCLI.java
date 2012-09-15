@@ -6,6 +6,7 @@
 package com.shopzilla.hadoop.testing;
 
 import com.shopzilla.hadoop.HadoopREPL;
+import com.shopzilla.hadoop.REPL;
 import com.shopzilla.hadoop.testing.hdfs.DFSCluster;
 import com.shopzilla.hadoop.testing.mapreduce.JobTracker;
 import org.apache.commons.io.FileUtils;
@@ -34,7 +35,7 @@ public class HadoopCLI {
     private DFSCluster dfsCluster;
     private JobTracker jobTracker;
 
-    protected HadoopCLI() throws IOException {
+    protected HadoopCLI() {
         configuration = new Configuration();
 
         configuration.setInt("mapred.submit.replication", 1);
@@ -46,21 +47,25 @@ public class HadoopCLI {
     }
 
     @PostConstruct
-    public void start(final File confFile) throws IOException {
-        dfsCluster = new DFSCluster();
-        dfsCluster.setLocalRoot(localRoot);
-        dfsCluster.setConfiguration(configuration);
-        dfsCluster.start();
+    public void start(final File confFile) throws REPL.ExitSignal {
+        try {
+            dfsCluster = new DFSCluster();
+            dfsCluster.setLocalRoot(localRoot);
+            dfsCluster.setConfiguration(configuration);
+            dfsCluster.start();
 
-        jobTracker = new JobTracker();
-        jobTracker.setDfsNameNode(dfsCluster.getFileSystem().getUri().toString());
-        jobTracker.start();
+            jobTracker = new JobTracker();
+            jobTracker.setDfsNameNode(dfsCluster.getFileSystem().getUri().toString());
+            jobTracker.start();
 
-        System.out.println(format("[HDFS HTTP: %s]", configuration.get("dfs.http.address")));
-        System.out.println(format("[M/R HTTP : %s]", jobTracker.getJobTrackerRunner().getJobTrackerInfoPort()));
+            System.out.println(format("[HDFS HTTP: %s]", configuration.get("dfs.http.address")));
+            System.out.println(format("[M/R HTTP : %s]", jobTracker.getJobTrackerRunner().getJobTrackerInfoPort()));
 
-        configuration.writeXml(new FileOutputStream(confFile));
-        HadoopREPL.main(new String[] { confFile.getAbsolutePath() });
+            configuration.writeXml(new FileOutputStream(confFile));
+            new HadoopREPL(configuration).loop("hadoop-in-a-box> ");
+        } catch (final IOException ex) {
+            throw new REPL.ExitSignal(1, ex.getMessage());
+        }
     }
 
     @PreDestroy
@@ -89,9 +94,13 @@ public class HadoopCLI {
             hadoopCLI = new HadoopCLI();
             hadoopCLI.setLocalRoot(new File(args[0]));
             hadoopCLI.start(new File(args.length == 2 ? args[1] : DEFAULT_CORE_SITE_LOCATION));
-        } catch (final Throwable t) {
-            System.err.println(t);
-            exitCode = 1;
+        } catch (final REPL.ExitSignal ex) {
+            exitCode = ex.getExitCode();
+            if (exitCode == 0) {
+                System.out.println(ex.getMessage());
+            } else {
+                System.err.println(ex.getMessage());
+            }
         } finally {
             if (hadoopCLI != null) {
                 hadoopCLI.stop();

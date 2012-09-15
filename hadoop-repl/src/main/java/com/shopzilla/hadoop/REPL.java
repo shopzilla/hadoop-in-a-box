@@ -9,6 +9,7 @@ import jline.Completor;
 import jline.ConsoleReader;
 
 import java.io.IOException;
+import java.util.LinkedList;
 
 /**
  * @author Jeremy Lucas
@@ -20,23 +21,44 @@ public abstract class REPL {
 
     private ConsoleReader consoleReader;
 
-    public REPL() throws IOException {
-        this.consoleReader = new ConsoleReader();
+    public REPL() throws ExitSignal {
+        try {
+            consoleReader = new ConsoleReader();
+        } catch (final Exception ex) {
+            throw new ExitSignal(1, ex.getMessage());
+        }
     }
 
     protected void addCompletors(final Completor... completors) {
         for (final Completor completor : completors) {
-            this.consoleReader.addCompletor(completor);
+            consoleReader.addCompletor(completor);
         }
     }
 
-    protected void loop() throws IOException, ExitSignal  {
+    protected void removeAllCompletors() {
+        final LinkedList completors = new LinkedList(consoleReader.getCompletors());
+        for (final Object completor : completors) {
+            consoleReader.removeCompletor((Completor) completor);
+        }
+    }
+
+    protected void removeCompletors(final Completor... completors) {
+        for (final Completor completor : completors) {
+            consoleReader.removeCompletor(completor);
+        }
+    }
+
+    public void loop() throws ExitSignal  {
         loop(DEFAULT_PROMPT);
     }
 
-    protected void loop(final String prompt) throws IOException, ExitSignal {
+    public void loop(final String prompt) throws ExitSignal {
         while (true) {
-            print(evaluate(read(prompt)));
+            try {
+                print(evaluate(read(prompt)));
+            } catch (final IOException ex) {
+                throw new ExitSignal(1, ex.getMessage());
+            }
         }
     }
 
@@ -47,19 +69,25 @@ public abstract class REPL {
     abstract protected String evaluate(final String cmd) throws ExitSignal;
 
     protected void print(final String out) throws ExitSignal {
-        System.out.println(out);
+        if (out != null) System.out.println(out);
     }
 
-    protected static class ExitSignal extends Throwable {
+    public static class ExitSignal extends RuntimeException {
 
+        private final String message;
         private final int exitCode;
 
-        public ExitSignal(final int exitCode) {
+        public ExitSignal(final int exitCode, final String message) {
             this.exitCode = exitCode;
+            this.message = message;
         }
 
         public int getExitCode() {
             return exitCode;
+        }
+
+        public String getMessage() {
+            return message;
         }
     }
 }

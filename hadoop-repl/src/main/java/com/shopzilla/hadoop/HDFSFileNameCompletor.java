@@ -25,23 +25,29 @@ import java.util.List;
  */
 public class HDFSFileNameCompletor implements Completor {
 
+    private final Path root;
     private final FileSystem fs;
 
     public HDFSFileNameCompletor(final Configuration conf) throws IOException {
+        this(conf, new Path("/"));
+    }
+
+    public HDFSFileNameCompletor(final Configuration conf, final Path root) throws IOException {
         fs = FileSystem.get(conf);
+        this.root = root;
     }
 
     @Override
     public int complete(final String buffer, final int cursor, final List candidates) {
         try {
 
-            if (buffer == null || !buffer.startsWith(File.separator)) {
+            if (buffer == null) {
                 return 0;
             }
 
             final String translated = buffer;
 
-            final Path f = new Path(translated);
+            final Path f = new Path(root, translated);
 
             final Path dir;
 
