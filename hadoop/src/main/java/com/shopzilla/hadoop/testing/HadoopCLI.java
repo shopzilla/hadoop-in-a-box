@@ -5,16 +5,11 @@
 
 package com.shopzilla.hadoop.testing;
 
-import com.shopzilla.common.io.console.REPL;
+import com.shopzilla.hadoop.HadoopREPL;
 import com.shopzilla.hadoop.testing.hdfs.DFSCluster;
-import com.shopzilla.hadoop.testing.hdfs.HDFSFileNameCompletor;
 import com.shopzilla.hadoop.testing.mapreduce.JobTracker;
-import jline.ArgumentCompletor;
-import jline.Completor;
-import jline.SimpleCompletor;
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FsShell;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -28,50 +23,16 @@ import static java.lang.String.format;
  * @author Jeremy Lucas
  * @since 9/5/12
  */
-public class HadoopCLI extends REPL {
+public class HadoopCLI {
+
+    private static final String DEFAULT_CORE_SITE_LOCATION = "/tmp/core-site.xml";
+    private static final String DEFAULT_MR_LOGS_LOCATION = "/tmp/minimrcluster/logs";
 
     private File localRoot;
-    private FsShell shell;
-    private File logDirectory = new File("/tmp/minimrcluster/logs");
+    private File logDirectory = new File(DEFAULT_MR_LOGS_LOCATION);
     private Configuration configuration;
     private DFSCluster dfsCluster;
     private JobTracker jobTracker;
-    private static final String[] HADOOP_COMMANDS = new String[] {
-        "cd",
-        "pwd",
-        "submit",
-        "ls",
-        "lsr",
-        "df",
-        "du",
-        "dus",
-        "count",
-        "mv",
-        "cp",
-        "rm",
-        "rmr",
-        "expunge",
-        "put",
-        "copyFromLocal",
-        "moveFromLocal",
-        "get",
-        "getmerge",
-        "cat",
-        "text",
-        "copyToLocal",
-        "moveToLocal",
-        "mkdir",
-        "setrep",
-        "touchz",
-        "stat",
-        "tail",
-        "chmod",
-        "chown",
-        "chgrp",
-        "help",
-        "quit",
-        "exit"
-    };
 
     protected HadoopCLI() throws IOException {
         configuration = new Configuration();
@@ -85,7 +46,7 @@ public class HadoopCLI extends REPL {
     }
 
     @PostConstruct
-    public void start() throws IOException {
+    public void start(final File confFile) throws IOException {
         dfsCluster = new DFSCluster();
         dfsCluster.setLocalRoot(localRoot);
         dfsCluster.setConfiguration(configuration);
@@ -96,19 +57,10 @@ public class HadoopCLI extends REPL {
         jobTracker.start();
 
         System.out.println(format("[HDFS HTTP: %s]", configuration.get("dfs.http.address")));
-        System.out.println(format("[JobTracker HTTP: localhost:%s]", jobTracker.getJobTrackerRunner().getJobTrackerInfoPort()));
+        System.out.println(format("[M/R HTTP : %s]", jobTracker.getJobTrackerRunner().getJobTrackerInfoPort()));
 
-        addCompletors(new ArgumentCompletor(new Completor[] {
-            new SimpleCompletor(
-                HADOOP_COMMANDS
-            ),
-            new HDFSFileNameCompletor(configuration)
-        }));
-
-        shell = new FsShell(configuration);
-
-        final File confFile = new File("/tmp/core-site.xml");
         configuration.writeXml(new FileOutputStream(confFile));
+        HadoopREPL.main(new String[] { confFile.getAbsolutePath() });
     }
 
     @PreDestroy
@@ -116,18 +68,6 @@ public class HadoopCLI extends REPL {
         jobTracker.stop();
         dfsCluster.stop();
         FileUtils.deleteQuietly(logDirectory);
-    }
-
-    public void runCommand(final String line) {
-        try {
-            shell.run(line.split(" "));
-        } catch (final Exception ex) {
-            System.err.println(ex);
-        }
-    }
-
-    public Configuration getConfiguration() {
-        return configuration;
     }
 
     public void setLocalRoot(final File localRoot) {
@@ -142,36 +82,21 @@ public class HadoopCLI extends REPL {
         int exitCode = 0;
         HadoopCLI hadoopCLI = null;
         try {
-            if (args.length < 1) {
-                System.err.println("Usage: ./hdp /path/to/local/hdfs/root");
-                throw new ExitSignal(1);
+            if (args.length < 1 || args.length > 2) {
+                System.err.println("Usage: ./hdp /path/to/local/hdfs/root [HADOOP_CORE_SITE_FILE]");
+                System.exit(1);
             }
             hadoopCLI = new HadoopCLI();
             hadoopCLI.setLocalRoot(new File(args[0]));
-            final File logDirectory = new File("/tmp/minimrcluster/logs");
-            hadoopCLI.setLogDirectory(logDirectory);
-            hadoopCLI.start();
-            hadoopCLI.loop("hadoop> ");
-        } catch (final ExitSignal ex) {
-            exitCode = ex.getExitCode();
-        } catch (final Exception ex) {
-            System.err.println(ex);
+            hadoopCLI.start(new File(args.length == 2 ? args[1] : DEFAULT_CORE_SITE_LOCATION));
+        } catch (final Throwable t) {
+            System.err.println(t);
             exitCode = 1;
         } finally {
             if (hadoopCLI != null) {
                 hadoopCLI.stop();
             }
-            System.exit(exitCode);
         }
-    }
-
-    @Override
-    protected String evaluate(final String cmd) throws ExitSignal {
-        if (cmd.equalsIgnoreCase("quit") || cmd.equalsIgnoreCase("exit")) {
-            throw new ExitSignal(0);
-        } else {
-            runCommand("-" + cmd);
-        }
-        return "";
+        System.exit(exitCode);
     }
 }

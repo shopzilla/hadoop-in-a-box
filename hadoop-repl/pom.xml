@@ -1,38 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <groupId>com.shopzilla.hadoop.testing</groupId>
     <artifactId>hadoop-in-a-box</artifactId>
+    <groupId>com.shopzilla.hadoop.testing</groupId>
     <version>0.1-SNAPSHOT</version>
   </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>hadoop-standalone</artifactId>
+  <artifactId>hadoop-repl</artifactId>
 
   <dependencies>
     <dependency>
-      <groupId>com.shopzilla.hadoop.testing</groupId>
-      <artifactId>hadoop-repl</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-test</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -76,18 +58,10 @@
         <configuration>
           <shadedArtifactAttached>true</shadedArtifactAttached>
           <shadedClassifierName>all</shadedClassifierName>
-          <finalName>hadoop-standalone-${project.version}</finalName>
-          <filters>
-            <filter>
-              <artifact>org.apache.hadoop:hadoop-core</artifact>
-              <excludes>
-                <exclude>**/webapps/**</exclude>
-              </excludes>
-            </filter>
-          </filters>
+          <finalName>hadoop-repl-${project.version}</finalName>
           <transformers>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-              <mainClass>com.shopzilla.hadoop.testing.HadoopCLI</mainClass>
+              <mainClass>com.shopzilla.hadoop.HadoopREPL</mainClass>
             </transformer>
           </transformers>
         </configuration>

@@ -60,5 +60,10 @@
       <artifactId>hadoop-standalone</artifactId>
       <classifier>all</classifier>
     </dependency>
+    <dependency>
+      <groupId>com.shopzilla.hadoop.testing</groupId>
+      <artifactId>hadoop-repl</artifactId>
+      <classifier>all</classifier>
+    </dependency>
   </dependencies>
 </project>

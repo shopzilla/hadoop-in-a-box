@@ -3,7 +3,7 @@
  * All rights reserved. Unauthorized disclosure or distribution is prohibited.
  */
 
-package com.shopzilla.common.io.console;
+package com.shopzilla.hadoop;
 
 import jline.Completor;
 import jline.ConsoleReader;

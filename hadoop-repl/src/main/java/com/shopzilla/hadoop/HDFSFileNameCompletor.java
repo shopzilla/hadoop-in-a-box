@@ -3,7 +3,7 @@
  * All rights reserved. Unauthorized disclosure or distribution is prohibited.
  */
 
-package com.shopzilla.hadoop.testing.hdfs;
+package com.shopzilla.hadoop;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;

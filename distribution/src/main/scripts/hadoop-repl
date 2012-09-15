@@ -1,0 +1,2 @@
+CWD=`dirname $0`
+java $JAVA_OPTS -jar $CWD/lib/hadoop-repl-*.jar $@
