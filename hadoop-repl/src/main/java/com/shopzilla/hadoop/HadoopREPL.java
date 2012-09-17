@@ -57,39 +57,39 @@ public class HadoopREPL extends REPL {
     };
 
     private final Map<String, CommandFunction> REPL_COMMANDS = ImmutableMap.<String, CommandFunction>builder()
-        .put("cd", new CommandFunction() {
-            @Override
-            public String execute(final String command, final String[] args) throws ExitSignal {
-                final String newDirectory = args[0];
-                Path newPath;
-                if (newDirectory.startsWith(File.separator)) {
-                    newPath = new Path(newDirectory);
-                } else {
-                    newPath = resolvePath(currentWorkingDirectory, newDirectory);
-                }
-
-                try {
-                    if (fs.exists(newPath) && !fs.isFile(newPath)) {
-                        currentWorkingDirectory = newPath;
-                        hdfsFileNameCompletor = new HDFSFileNameCompletor(configuration, currentWorkingDirectory);
-                        resetCompletors();
-                    } else if (fs.isFile(newPath)) {
-                        System.err.println(format("Must specify a directory [%s]", newPath));
-                    } else {
-                        System.err.println(format("No such directory [%s]", newPath));
-                    }
-                } catch (final IOException ex) {
-                    System.err.println(ex);
-                }
-                return null;
-            }
-        })
-        .put("pwd", new CommandFunction() {
-            @Override
-            public String execute(final String command, final String[] args) throws ExitSignal {
-                return currentWorkingDirectory.toString();
-            }
-        })
+//        .put("cd", new CommandFunction() {
+//            @Override
+//            public String execute(final String command, final String[] args) throws ExitSignal {
+//                final String newDirectory = args[0];
+//                Path newPath;
+//                if (newDirectory.startsWith(File.separator)) {
+//                    newPath = new Path(newDirectory);
+//                } else {
+//                    newPath = resolvePath(currentWorkingDirectory, newDirectory);
+//                }
+//
+//                try {
+//                    if (fs.exists(newPath) && !fs.isFile(newPath)) {
+//                        currentWorkingDirectory = newPath;
+//                        hdfsFileNameCompletor = new HDFSFileNameCompletor(configuration, currentWorkingDirectory);
+//                        resetCompletors();
+//                    } else if (fs.isFile(newPath)) {
+//                        System.err.println(format("Must specify a directory [%s]", newPath));
+//                    } else {
+//                        System.err.println(format("No such directory [%s]", newPath));
+//                    }
+//                } catch (final IOException ex) {
+//                    System.err.println(ex);
+//                }
+//                return null;
+//            }
+//        })
+//        .put("pwd", new CommandFunction() {
+//            @Override
+//            public String execute(final String command, final String[] args) throws ExitSignal {
+//                return currentWorkingDirectory.toString();
+//            }
+//        })
 //        .put("submit", FS_SHELL_COMMAND)
         .put("help", new CommandFunction() {
             @Override
