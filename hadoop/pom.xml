@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.shopzilla.hadoop.testing</groupId>
+    <groupId>com.shopzilla.opensource.hadoop</groupId>
     <artifactId>hadoop-in-a-box</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
@@ -14,7 +14,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.shopzilla.hadoop.testing</groupId>
+      <groupId>com.shopzilla.opensource.hadoop</groupId>
       <artifactId>hadoop-repl</artifactId>
       <version>${project.version}</version>
     </dependency>

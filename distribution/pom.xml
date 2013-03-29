@@ -3,8 +3,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
+    <groupId>com.shopzilla.opensource.hadoop</groupId>
     <artifactId>hadoop-in-a-box</artifactId>
-    <groupId>com.shopzilla.hadoop.testing</groupId>
     <version>0.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -56,12 +56,12 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.shopzilla.hadoop.testing</groupId>
+      <groupId>com.shopzilla.opensource.hadoop</groupId>
       <artifactId>hadoop-standalone</artifactId>
       <classifier>all</classifier>
     </dependency>
     <dependency>
-      <groupId>com.shopzilla.hadoop.testing</groupId>
+      <groupId>com.shopzilla.opensource.hadoop</groupId>
       <artifactId>hadoop-repl</artifactId>
       <classifier>all</classifier>
     </dependency>
