@@ -32,8 +32,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static java.lang.String.format;
-
 /**
  * @author Jeremy Lucas
  * @since 9/5/12
@@ -43,32 +41,31 @@ public class HadoopCLI {
     private static final String DEFAULT_CORE_SITE_LOCATION = "/tmp/core-site.xml";
     private static final String DEFAULT_MR_LOGS_LOCATION = "/tmp/minimrcluster/logs";
 
-    private File localRoot;
-    private File logDirectory = new File(DEFAULT_MR_LOGS_LOCATION);
-    private Configuration configuration;
+    private final File localRoot;
+    private final File logDirectory = new File(DEFAULT_MR_LOGS_LOCATION);
+    private final Configuration configuration;
     private DFSCluster dfsCluster;
     private JobTracker jobTracker;
 
-    protected HadoopCLI() {
-        configuration = new Configuration();
-
+    protected HadoopCLI(final File localRoot) {
+        this.configuration = new Configuration();
+        this.localRoot = localRoot;
         System.setProperty("hadoop.log.dir", logDirectory.getAbsolutePath());
     }
 
     @PostConstruct
     public void start(final File confFile) throws REPL.ExitSignal {
         try {
-            dfsCluster = new DFSCluster();
-            dfsCluster.setLocalRoot(localRoot);
-            dfsCluster.setConfiguration(configuration);
-            dfsCluster.start();
+            dfsCluster = DFSCluster.builder()
+                .usingConfiguration(configuration)
+                .withInitialStructure(localRoot)
+                .build()
+                .start();
 
-            jobTracker = new JobTracker();
-            jobTracker.setDfsNameNode(dfsCluster.getFileSystem().getUri().toString());
-            jobTracker.start();
-
-            System.out.println(format("[HDFS HTTP: %s]", configuration.get("dfs.http.address")));
-            System.out.println(format("[M/R HTTP : %s]", jobTracker.getJobTrackerRunner().getJobTrackerInfoPort()));
+            jobTracker = JobTracker.builder()
+                .withNameNode(dfsCluster.getFileSystem().getUri().toString())
+                .build()
+                .start();
 
             configuration.writeXml(new FileOutputStream(confFile));
             new HadoopREPL(configuration).loop("hadoop-in-a-box> ");
@@ -84,14 +81,6 @@ public class HadoopCLI {
         FileUtils.deleteQuietly(logDirectory);
     }
 
-    public void setLocalRoot(final File localRoot) {
-        this.localRoot = localRoot;
-    }
-
-    public void setLogDirectory(final File logDirectory) {
-        this.logDirectory = logDirectory;
-    }
-
     public static void main(final String[] args) {
         int exitCode = 0;
         HadoopCLI hadoopCLI = null;
@@ -100,8 +89,7 @@ public class HadoopCLI {
                 System.err.println("Usage: ./hdp /path/to/local/hdfs/root [HADOOP_CORE_SITE_FILE]");
                 System.exit(1);
             }
-            hadoopCLI = new HadoopCLI();
-            hadoopCLI.setLocalRoot(new File(args[0]));
+            hadoopCLI = new HadoopCLI(new File(args[0]));
             hadoopCLI.start(new File(args.length == 2 ? args[1] : DEFAULT_CORE_SITE_LOCATION));
         } catch (final REPL.ExitSignal ex) {
             exitCode = ex.getExitCode();

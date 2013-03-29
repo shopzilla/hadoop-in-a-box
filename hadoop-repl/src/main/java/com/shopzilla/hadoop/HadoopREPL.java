@@ -208,14 +208,11 @@ public class HadoopREPL extends REPL {
             }
             final Configuration configuration = new Configuration(true);
             configuration.addResource(new File(args[0]).toURI().toURL());
-
             new HadoopREPL(configuration).loop("hadoop> ");
-        }
-        catch (final ExitSignal ex) {
+        } catch (final ExitSignal ex) {
             System.err.println(ex.getMessage());
             exitCode = ex.getExitCode();
-        }
-        catch (final Exception ex) {
+        } catch (final Exception ex) {
             System.err.println(ex);
             exitCode = 1;
         }

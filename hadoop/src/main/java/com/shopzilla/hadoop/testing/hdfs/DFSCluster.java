@@ -41,44 +41,66 @@ import java.io.InputStreamReader;
  */
 public class DFSCluster {
 
-    private static final int DEFAULT_NUMBER_OF_DATA_NODES = 4;
+    private final Configuration configuration;
+    private final Path hdfsRoot;
+    private final File localRoot;
+    private final int numberOfDataNodes;
 
-    private Configuration configuration;
     private MiniDFSCluster miniDFSCluster;
-    private Path hdfsRoot;
-    private File localRoot;
     private File projectDirectory;
     private File buildDirectory;
-    /*private TServer hiveServer;
-  private HiveClient hiveClient;*/
+
+    public static class Builder {
+        private Configuration configuration = new Configuration();
+        private File localRoot;
+        private int numberOfDataNodes = 4;
+
+        public Builder usingConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return this;
+        }
+
+        public Builder withDataNodes(final int numberOfDataNodes) {
+            this.numberOfDataNodes = numberOfDataNodes;
+            return this;
+        }
+
+        public Builder withInitialStructure(final File localRoot) {
+            this.localRoot = localRoot;
+            return this;
+        }
+
+        public DFSCluster build() {
+            return new DFSCluster(configuration, localRoot, numberOfDataNodes);
+        }
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public DFSCluster(final Configuration configuration, final File localRoot, final int numberOfDataNodes) {
+        this.configuration = configuration;
+        this.localRoot = localRoot;
+        this.hdfsRoot = new Path(localRoot.getName());
+        this.numberOfDataNodes = numberOfDataNodes;
+    }
 
     @PostConstruct
-    public void start() {
+    public DFSCluster start() {
         try {
-            this.hdfsRoot = new Path(localRoot.getName());
-            miniDFSCluster = new MiniDFSCluster(configuration, DEFAULT_NUMBER_OF_DATA_NODES, true, null);
-
-            /*hiveServer = createHiveServer();
-          new Thread(new Runnable() {
-              @Override
-              public void run() {
-                  hiveServer.serve();
-              }
-          }).start();
-
-          hiveClient = createHiveClient();*/
-
+            miniDFSCluster = new MiniDFSCluster(configuration, numberOfDataNodes, true, null);
             buildDirectory = new File(miniDFSCluster.getDataDirectory()).getParentFile().getParentFile().getParentFile().getParentFile();
             projectDirectory = buildDirectory.getParentFile();
-
             importHDFSDirectory(localRoot);
+            return this;
         }
-        catch (Exception ex) {
+        catch (final IOException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    private void importHDFSDirectory(final File file) throws Exception {
+    private void importHDFSDirectory(final File file) throws IOException {
         Path path = new Path(hdfsRoot, File.separator + localRoot.toURI().relativize(file.toURI()).getPath());
         if (file.isDirectory()) {
             getFileSystem().mkdirs(path);
@@ -93,51 +115,6 @@ public class DFSCluster {
         }
     }
 
-    /*
-    private TServer createHiveServer(String...args) {
-        try {
-            HiveServer.HiveServerCli cli = new HiveServer.HiveServerCli();
-            cli.parse(args);
-
-            Properties hiveconf = cli.addHiveconfToSystemProperties();
-            hiveconf.putAll(ConfigurationUtil.toProperties(configuration));
-
-            HiveConf conf = new HiveConf(HiveServer.HiveServerHandler.class);
-            ServerUtils.cleanUpScratchDir(conf);
-            TServerTransport serverTransport = new TServerSocket(cli.port);
-
-            for (Map.Entry item : hiveconf.entrySet()) {
-                conf.set((String) item.getKey(), (String) item.getValue());
-            }
-
-            HiveServer.ThriftHiveProcessorFactory hfactory = new HiveServer.ThriftHiveProcessorFactory(null, conf);
-
-            TThreadPoolServer.Args sargs = new TThreadPoolServer.Args(serverTransport)
-                .processorFactory(hfactory)
-                .transportFactory(new TTransportFactory())
-                .protocolFactory(new TBinaryProtocol.Factory())
-                .minWorkerThreads(cli.minWorkerThreads)
-                .maxWorkerThreads(cli.maxWorkerThreads);
-
-            return new TThreadPoolServer(sargs);
-        }
-        catch(Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    private HiveClient createHiveClient() {
-        try {
-            final TTransport transport = new TSocket("0.0.0.0", 10000);
-            HiveClient client = new org.apache.hadoop.hive.service.HiveClient(new TBinaryProtocol(transport));
-            transport.open();
-            return client;
-        }
-        catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }*/
-
     public FileSystem getFileSystem() {
         try {
             return miniDFSCluster.getFileSystem();
@@ -151,12 +128,9 @@ public class DFSCluster {
         return configuration;
     }
 
-    /*
-    public HiveClient getHiveClient() {
-        return hiveClient;
+    public MiniDFSCluster getMiniDFSCluster() {
+        return miniDFSCluster;
     }
-    */
-
 
     public void processPaths(final Path path, final Function<Path, Void> pathProcessor) throws IOException {
         if (miniDFSCluster.getFileSystem().exists(path)) {
@@ -254,40 +228,18 @@ public class DFSCluster {
 
                 @Override
                 public void run() {
-                    try {
-                        /*
-                        if (hiveServer != null) {
-                            hiveServer.stop();
-                        }
-                        */
-                        if (miniDFSCluster != null) {
-                            miniDFSCluster.shutdown();
-                            miniDFSCluster = null;
-                        }
-                    }
-                    catch (Exception ex) {
-                        ex.printStackTrace();
+                    if (miniDFSCluster != null) {
+                        miniDFSCluster.shutdown();
+                        miniDFSCluster = null;
                     }
                 }
             });
             shutdownThread.start();
             shutdownThread.join(10000);
-            FileUtils.deleteDirectory(buildDirectory);
-            FileUtils.deleteDirectory(new File(projectDirectory, "logs"));
-            //FileUtils.deleteDirectory(new File(projectDirectory, "metastore_db"));
-            //FileUtils.deleteQuietly(new File(projectDirectory, "derby.log"));
-        }
-        catch (Exception ex) {
+            FileUtils.deleteQuietly(buildDirectory);
+            FileUtils.deleteQuietly(new File(projectDirectory, "logs"));
+        } catch (final InterruptedException ex) {
             throw new RuntimeException(ex);
         }
     }
-
-    public void setConfiguration(final Configuration configuration) {
-        this.configuration = configuration;
-    }
-
-    public void setLocalRoot(final File localRoot) {
-        this.localRoot = localRoot;
-    }
-
 }

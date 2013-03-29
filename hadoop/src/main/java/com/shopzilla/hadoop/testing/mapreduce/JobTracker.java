@@ -23,6 +23,7 @@ import org.apache.hadoop.mapred.MiniMRCluster;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.io.IOException;
 
 /**
  * @author Jeremy Lucas
@@ -30,22 +31,50 @@ import javax.annotation.PreDestroy;
  */
 public class JobTracker {
 
-    private String dfsNameNode;
+    private final String dfsNameNode;
+    private final int numTaskTrackers;
     private MiniMRCluster miniMrCluster;
-    private int numTaskTrackers = 4;
+
+    public static class Builder {
+        private String dfsNameNode;
+        private int numTaskTrackers = 4;
+
+        public Builder withNameNode(final String dfsNameNode) {
+            this.dfsNameNode = dfsNameNode;
+            return this;
+        }
+
+        public Builder withTastkTrackers(final int numTaskTrackers) {
+            this.numTaskTrackers = numTaskTrackers;
+            return this;
+        }
+
+        public JobTracker build() {
+            return new JobTracker(dfsNameNode, numTaskTrackers);
+        }
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public JobTracker(final String dfsNameNode, final int numTaskTrackers) {
+        this.dfsNameNode = dfsNameNode;
+        this.numTaskTrackers = numTaskTrackers;
+    }
 
     @PostConstruct
-    public void start() {
+    public JobTracker start() {
         try {
             miniMrCluster = new MiniMRCluster(numTaskTrackers, dfsNameNode, 1);
-
-        } catch (final Exception ex) {
+            return this;
+        } catch (final IOException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    public MiniMRCluster.JobTrackerRunner getJobTrackerRunner() {
-        return miniMrCluster.getJobTrackerRunner();
+    public MiniMRCluster getMiniMrCluster() {
+        return miniMrCluster;
     }
 
     @PreDestroy
@@ -69,16 +98,8 @@ public class JobTracker {
             shutdownThread.start();
             shutdownThread.join(10000);
         }
-        catch (Exception ex) {
+        catch (final InterruptedException ex) {
             throw new RuntimeException(ex);
         }
-    }
-
-    public void setDfsNameNode(final String dfsNameNode) {
-        this.dfsNameNode = dfsNameNode;
-    }
-
-    public void setNumTaskTrackers(final int numTaskTrackers) {
-        this.numTaskTrackers = numTaskTrackers;
     }
 }
