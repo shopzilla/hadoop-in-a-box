@@ -21,9 +21,8 @@ package com.shopzilla.hadoop;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
-import jline.ArgumentCompletor;
-import jline.Completor;
-import jline.SimpleCompletor;
+import com.google.common.collect.Lists;
+import jline.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FsShell;
@@ -41,8 +40,6 @@ import static java.lang.String.format;
  * @since 9/12/12
  */
 public class HadoopREPL extends REPL {
-
-    private Path currentWorkingDirectory = new Path("/");
 
     private final Configuration configuration;
 
@@ -71,40 +68,23 @@ public class HadoopREPL extends REPL {
     };
 
     private final Map<String, CommandFunction> REPL_COMMANDS = ImmutableMap.<String, CommandFunction>builder()
-//        .put("cd", new CommandFunction() {
+        // TODO: Get this to work! :)
+//        .put("submit", new CommandFunction() {
 //            @Override
 //            public String execute(final String command, final String[] args) throws ExitSignal {
-//                final String newDirectory = args[0];
-//                Path newPath;
-//                if (newDirectory.startsWith(File.separator)) {
-//                    newPath = new Path(newDirectory);
-//                } else {
-//                    newPath = resolvePath(currentWorkingDirectory, newDirectory);
+//                try {
+//                    final int jobExitCode = ToolRunner.run(configuration, new JobClient(), args);
+//                    if (jobExitCode != 0) {
+//                        return format("Job failed with exit code [%s]", jobExitCode);
+//                    } else {
+//                        return format("Job complete");
+//                    }
+//                } catch (final Exception ex) {
+//                    throw new ExitSignal(100, ex.getMessage());
 //                }
 //
-//                try {
-//                    if (fs.exists(newPath) && !fs.isFile(newPath)) {
-//                        currentWorkingDirectory = newPath;
-//                        hdfsFileNameCompletor = new HDFSFileNameCompletor(configuration, currentWorkingDirectory);
-//                        resetCompletors();
-//                    } else if (fs.isFile(newPath)) {
-//                        System.err.println(format("Must specify a directory [%s]", newPath));
-//                    } else {
-//                        System.err.println(format("No such directory [%s]", newPath));
-//                    }
-//                } catch (final IOException ex) {
-//                    System.err.println(ex);
-//                }
-//                return null;
 //            }
 //        })
-//        .put("pwd", new CommandFunction() {
-//            @Override
-//            public String execute(final String command, final String[] args) throws ExitSignal {
-//                return currentWorkingDirectory.toString();
-//            }
-//        })
-//        .put("submit", FS_SHELL_COMMAND)
         .put("help", new CommandFunction() {
             @Override
             public String execute(final String command, final String[] args) throws ExitSignal {
@@ -133,10 +113,6 @@ public class HadoopREPL extends REPL {
         .put("rmr", FS_SHELL_COMMAND)
         .put("expunge", FS_SHELL_COMMAND)
         .put("put", FS_SHELL_COMMAND)
-        .put("copyFromLocal", FS_SHELL_COMMAND)
-        .put("moveFromLocal", FS_SHELL_COMMAND)
-        .put("get", FS_SHELL_COMMAND)
-        .put("getmerge", FS_SHELL_COMMAND)
         .put("cat", FS_SHELL_COMMAND)
         .put("text", FS_SHELL_COMMAND)
         .put("copyToLocal", FS_SHELL_COMMAND)
@@ -149,6 +125,10 @@ public class HadoopREPL extends REPL {
         .put("chmod", FS_SHELL_COMMAND)
         .put("chown", FS_SHELL_COMMAND)
         .put("chgrp", FS_SHELL_COMMAND)
+        .put("copyFromLocal", FS_SHELL_COMMAND)
+        .put("moveFromLocal", FS_SHELL_COMMAND)
+        .put("get", FS_SHELL_COMMAND)
+        .put("getmerge", FS_SHELL_COMMAND)
         .build();
 
     private HDFSFileNameCompletor hdfsFileNameCompletor;
@@ -167,10 +147,10 @@ public class HadoopREPL extends REPL {
 
     protected void resetCompletors() {
         removeAllCompletors();
-        addCompletors(new ArgumentCompletor(new Completor[] {
+        addCompletors(new ArgumentCompletor(Lists.newArrayList(
             new SimpleCompletor(REPL_COMMANDS.keySet().toArray(new String[0])),
-            hdfsFileNameCompletor
-        }));
+            new MultiCompletor(Lists.newArrayList(new FileNameCompletor(), hdfsFileNameCompletor))
+        )));
     }
 
     protected Path resolvePath(final Path currentPath, final String newPath) {

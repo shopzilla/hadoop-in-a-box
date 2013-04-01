@@ -42,7 +42,6 @@ import java.io.InputStreamReader;
 public class DFSCluster {
 
     private final Configuration configuration;
-    private final Path hdfsRoot;
     private final File localRoot;
     private final int numberOfDataNodes;
 
@@ -82,7 +81,6 @@ public class DFSCluster {
     public DFSCluster(final Configuration configuration, final File localRoot, final int numberOfDataNodes) {
         this.configuration = configuration;
         this.localRoot = localRoot;
-        this.hdfsRoot = new Path(localRoot.getName());
         this.numberOfDataNodes = numberOfDataNodes;
     }
 
@@ -92,7 +90,9 @@ public class DFSCluster {
             miniDFSCluster = new MiniDFSCluster(configuration, numberOfDataNodes, true, null);
             buildDirectory = new File(miniDFSCluster.getDataDirectory()).getParentFile().getParentFile().getParentFile().getParentFile();
             projectDirectory = buildDirectory.getParentFile();
-            importHDFSDirectory(localRoot);
+            if (localRoot != null) {
+                importHDFSDirectory(new Path(localRoot.getName()), localRoot);
+            }
             return this;
         }
         catch (final IOException ex) {
@@ -100,13 +100,13 @@ public class DFSCluster {
         }
     }
 
-    private void importHDFSDirectory(final File file) throws IOException {
+    private void importHDFSDirectory(final Path hdfsRoot, final File file) throws IOException {
         Path path = new Path(hdfsRoot, File.separator + localRoot.toURI().relativize(file.toURI()).getPath());
         if (file.isDirectory()) {
             getFileSystem().mkdirs(path);
             getFileSystem().makeQualified(path);
             for (File child : file.listFiles()) {
-                importHDFSDirectory(child);
+                importHDFSDirectory(hdfsRoot, child);
             }
         }
         else {

@@ -67,8 +67,7 @@ public class HDFSFileNameCompletor implements Completor {
 
             if (translated.endsWith(File.separator)) {
                 dir = f;
-            }
-            else {
+            } else {
                 dir = f.getParent();
             }
 
@@ -76,20 +75,25 @@ public class HDFSFileNameCompletor implements Completor {
 
             return matchFiles(buffer, translated, entries, candidates);
         } catch (final Exception ex) {
-            throw new RuntimeException(ex);
-        }
-        finally {
+            // Don't do anything
+            return 0;
+        } finally {
             sortFileNames(candidates);
         }
     }
 
     protected Path[] listFiles(final Path d) throws IOException {
-        return Lists.transform(Arrays.asList(fs.listStatus(d)), new Function<FileStatus, Path>() {
-            @Override
-            public Path apply(final FileStatus fileStatus) {
-                return fileStatus.getPath();
-            }
-        }).toArray(new Path[0]);
+        final FileStatus[] files = fs.listStatus(d);
+        if (files != null) {
+            return Lists.transform(Arrays.asList(files), new Function<FileStatus, Path>() {
+                @Override
+                public Path apply(final FileStatus fileStatus) {
+                    return fileStatus.getPath();
+                }
+            }).toArray(new Path[0]);
+        } else {
+            return new Path[0];
+        }
     }
 
     protected void sortFileNames(final List fileNames) {
@@ -103,30 +107,18 @@ public class HDFSFileNameCompletor implements Completor {
 
         int matches = 0;
 
-        // first pass: just count the matches
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].toUri().getPath().startsWith(translated)) {
                 matches++;
             }
         }
 
-        // green - executable
-        // blue - directory
-        // red - compressed
-        // cyan - symlink
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].toUri().getPath().startsWith(translated)) {
                 String name =
                     entries[i].getName()
                         + (((matches == 1) && !fs.isFile(entries[i]))
                         ? File.separator : " ");
-
-                /*
-                if (entries [i].isDirectory ())
-                {
-                        name = new ANSIBuffer ().blue (name).toString ();
-                }
-                */
                 candidates.add(name);
             }
         }

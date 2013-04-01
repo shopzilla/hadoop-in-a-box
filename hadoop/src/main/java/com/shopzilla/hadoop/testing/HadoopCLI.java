@@ -47,6 +47,10 @@ public class HadoopCLI {
     private DFSCluster dfsCluster;
     private JobTracker jobTracker;
 
+    protected HadoopCLI() {
+        this(null);
+    }
+
     protected HadoopCLI(final File localRoot) {
         this.configuration = new Configuration();
         this.localRoot = localRoot;
@@ -85,12 +89,19 @@ public class HadoopCLI {
         int exitCode = 0;
         HadoopCLI hadoopCLI = null;
         try {
-            if (args.length < 1 || args.length > 2) {
-                System.err.println("Usage: ./hdp /path/to/local/hdfs/root [HADOOP_CORE_SITE_FILE]");
-                System.exit(1);
+            File localRoot = null;
+            File configurationFile = new File(DEFAULT_CORE_SITE_LOCATION);
+            if (args.length >= 1) {
+                localRoot = new File(args[0]);
             }
-            hadoopCLI = new HadoopCLI(new File(args[0]));
-            hadoopCLI.start(new File(args.length == 2 ? args[1] : DEFAULT_CORE_SITE_LOCATION));
+            if (args.length == 2) {
+                configurationFile = new File(args[1]);
+            }
+            if (args.length > 2) {
+                throw new REPL.ExitSignal(1, "Usage: ./hdp /path/to/local/hdfs/root [HADOOP_CORE_SITE_FILE]");
+            }
+            hadoopCLI = new HadoopCLI(localRoot);
+            hadoopCLI.start(configurationFile);
         } catch (final REPL.ExitSignal ex) {
             exitCode = ex.getExitCode();
             if (exitCode == 0) {
