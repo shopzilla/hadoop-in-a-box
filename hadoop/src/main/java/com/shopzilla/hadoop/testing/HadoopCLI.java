@@ -44,21 +44,23 @@ public class HadoopCLI {
     private final File localRoot;
     private final File logDirectory = new File(DEFAULT_MR_LOGS_LOCATION);
     private final Configuration configuration;
+    private final File configurationFile;
     private DFSCluster dfsCluster;
     private JobTracker jobTracker;
 
     protected HadoopCLI() {
-        this(null);
+        this(null, new File(DEFAULT_CORE_SITE_LOCATION));
     }
 
-    protected HadoopCLI(final File localRoot) {
+    protected HadoopCLI(final File localRoot, final File configurationFile) {
         this.configuration = new Configuration();
+        this.configurationFile = configurationFile;
         this.localRoot = localRoot;
         System.setProperty("hadoop.log.dir", logDirectory.getAbsolutePath());
     }
 
     @PostConstruct
-    public void start(final File confFile) throws REPL.ExitSignal {
+    public void start() throws REPL.ExitSignal {
         try {
             dfsCluster = DFSCluster.builder()
                 .usingConfiguration(configuration)
@@ -71,7 +73,7 @@ public class HadoopCLI {
                 .build()
                 .start();
 
-            configuration.writeXml(new FileOutputStream(confFile));
+            configuration.writeXml(new FileOutputStream(configurationFile));
             new HadoopREPL(configuration).loop("hadoop-in-a-box> ");
         } catch (final IOException ex) {
             throw new REPL.ExitSignal(1, ex.getMessage());
@@ -83,6 +85,7 @@ public class HadoopCLI {
         jobTracker.stop();
         dfsCluster.stop();
         FileUtils.deleteQuietly(logDirectory);
+        FileUtils.deleteQuietly(configurationFile);
     }
 
     public static void main(final String[] args) {
@@ -100,8 +103,8 @@ public class HadoopCLI {
             if (args.length > 2) {
                 throw new REPL.ExitSignal(1, "Usage: ./hdp /path/to/local/hdfs/root [HADOOP_CORE_SITE_FILE]");
             }
-            hadoopCLI = new HadoopCLI(localRoot);
-            hadoopCLI.start(configurationFile);
+            hadoopCLI = new HadoopCLI(localRoot, configurationFile);
+            hadoopCLI.start();
         } catch (final REPL.ExitSignal ex) {
             exitCode = ex.getExitCode();
             if (exitCode == 0) {
