@@ -22,15 +22,15 @@ package com.shopzilla.hadoop;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import jline.*;
+import jline.ArgumentCompletor;
+import jline.MultiCompletor;
+import jline.SimpleCompletor;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FsShell;
-import org.apache.hadoop.fs.Path;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Map;
 
 import static java.lang.String.format;
@@ -52,8 +52,7 @@ public class HadoopREPL extends REPL {
         public String execute(final String command, final String[] args) {
             try {
                 shell.run(Joiner.on(" ").join("-" + command, Joiner.on(" ").join(args)).split(" "));
-            }
-            catch (final Exception ex) {
+            } catch (final Exception ex) {
                 System.err.println(ex);
             }
             return null;
@@ -92,7 +91,12 @@ public class HadoopREPL extends REPL {
                     return "Usage: help [command]";
                 } else {
                     if (REPL_COMMANDS.containsKey(args[0])) {
-                        return format("Displaying help for \"%s\":\n", args[0]);
+                        try {
+                            shell.run(new String[]{ "-help", args[0] });
+                        } catch (final Exception ex) {
+                            System.err.println(ex);
+                        }
+                        return format("Displayed help for \"%s\":\n", args[0]);
                     } else {
                         return format("Unknown command \"%s\"", args[0]);
                     }
@@ -149,17 +153,8 @@ public class HadoopREPL extends REPL {
         removeAllCompletors();
         addCompletors(new ArgumentCompletor(Lists.newArrayList(
             new SimpleCompletor(REPL_COMMANDS.keySet().toArray(new String[0])),
-            new MultiCompletor(Lists.newArrayList(new FileNameCompletor(), hdfsFileNameCompletor))
+            new MultiCompletor(Lists.newArrayList(hdfsFileNameCompletor))
         )));
-    }
-
-    protected Path resolvePath(final Path currentPath, final String newPath) {
-        final String[] pathParts = newPath.split(File.separator);
-        if (pathParts[0].startsWith("..")) {
-            return resolvePath(currentPath.getParent(), Joiner.on(File.separator).join(Arrays.copyOfRange(pathParts, 1, pathParts.length)));
-        } else {
-            return new Path(currentPath, newPath);
-        }
     }
 
     @Override
@@ -184,7 +179,7 @@ public class HadoopREPL extends REPL {
 
         try {
             if (args.length < 1) {
-                throw new ExitSignal(1, "Usage: ./hadoop-repl /path/to/core-site.xml");
+                throw new ExitSignal(1, "Usage: ./hadoop-repl <path-to-hadoop-core-site-file>");
             }
             final Configuration configuration = new Configuration(true);
             configuration.addResource(new File(args[0]).toURI().toURL());

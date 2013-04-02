@@ -21,15 +21,8 @@ package com.shopzilla.hadoop.testing;
 
 import com.shopzilla.hadoop.HadoopREPL;
 import com.shopzilla.hadoop.REPL;
-import com.shopzilla.hadoop.testing.hdfs.DFSCluster;
-import com.shopzilla.hadoop.testing.mapreduce.JobTracker;
-import org.apache.commons.io.FileUtils;
-import org.apache.hadoop.conf.Configuration;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -39,58 +32,9 @@ import java.io.IOException;
 public class HadoopCLI {
 
     private static final String DEFAULT_CORE_SITE_LOCATION = "/tmp/core-site.xml";
-    private static final String DEFAULT_MR_LOGS_LOCATION = "/tmp/minimrcluster/logs";
-
-    private final File localRoot;
-    private final File logDirectory = new File(DEFAULT_MR_LOGS_LOCATION);
-    private final Configuration configuration;
-    private final File configurationFile;
-    private DFSCluster dfsCluster;
-    private JobTracker jobTracker;
-
-    protected HadoopCLI() {
-        this(null, new File(DEFAULT_CORE_SITE_LOCATION));
-    }
-
-    protected HadoopCLI(final File localRoot, final File configurationFile) {
-        this.configuration = new Configuration();
-        this.configurationFile = configurationFile;
-        this.localRoot = localRoot;
-        System.setProperty("hadoop.log.dir", logDirectory.getAbsolutePath());
-    }
-
-    @PostConstruct
-    public void start() throws REPL.ExitSignal {
-        try {
-            dfsCluster = DFSCluster.builder()
-                .usingConfiguration(configuration)
-                .withInitialStructure(localRoot)
-                .build()
-                .start();
-
-            jobTracker = JobTracker.builder()
-                .withNameNode(dfsCluster.getFileSystem().getUri().toString())
-                .build()
-                .start();
-
-            configuration.writeXml(new FileOutputStream(configurationFile));
-            new HadoopREPL(configuration).loop("hadoop-in-a-box> ");
-        } catch (final IOException ex) {
-            throw new REPL.ExitSignal(1, ex.getMessage());
-        }
-    }
-
-    @PreDestroy
-    public void stop() {
-        jobTracker.stop();
-        dfsCluster.stop();
-        FileUtils.deleteQuietly(logDirectory);
-        FileUtils.deleteQuietly(configurationFile);
-    }
 
     public static void main(final String[] args) {
         int exitCode = 0;
-        HadoopCLI hadoopCLI = null;
         try {
             File localRoot = null;
             File configurationFile = new File(DEFAULT_CORE_SITE_LOCATION);
@@ -101,20 +45,26 @@ public class HadoopCLI {
                 configurationFile = new File(args[1]);
             }
             if (args.length > 2) {
-                throw new REPL.ExitSignal(1, "Usage: ./hdp /path/to/local/hdfs/root [HADOOP_CORE_SITE_FILE]");
+                throw new REPL.ExitSignal(1, "Usage: ./hadoop-standalone [<local-root-directory>] [<path-to-hadoop-core-site-file>]");
             }
-            hadoopCLI = new HadoopCLI(localRoot, configurationFile);
-            hadoopCLI.start();
+            final MiniCluster miniCluster = new MiniCluster(localRoot, configurationFile);
+            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    miniCluster.stop();
+                }
+            }));
+            miniCluster.start();
+            new HadoopREPL(miniCluster.getConfiguration()).loop("hadoop-in-a-box> ");
+        } catch (final IOException ex) {
+            exitCode = 100;
+            System.err.println(ex.getMessage());
         } catch (final REPL.ExitSignal ex) {
             exitCode = ex.getExitCode();
             if (exitCode == 0) {
                 System.out.println(ex.getMessage());
             } else {
                 System.err.println(ex.getMessage());
-            }
-        } finally {
-            if (hadoopCLI != null) {
-                hadoopCLI.stop();
             }
         }
         System.exit(exitCode);
