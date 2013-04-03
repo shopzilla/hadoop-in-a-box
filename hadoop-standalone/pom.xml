@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.shopzilla.opensource.hadoop</groupId>
     <artifactId>hadoop-in-a-box</artifactId>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>hadoop-standalone</artifactId>
