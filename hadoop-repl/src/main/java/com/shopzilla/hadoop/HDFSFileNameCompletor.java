@@ -60,9 +60,7 @@ public class HDFSFileNameCompletor implements Completor {
             }
 
             final String translated = buffer;
-
             final Path f = new Path(root, translated);
-
             final Path dir;
 
             if (translated.endsWith(File.separator)) {

@@ -24,12 +24,19 @@
         <include>*</include>
       </includes>
     </fileSet>
-    <!--<fileSet>-->
-      <!--<directory>${basedir}/../hadoop/src/main/webapps/</directory>-->
-      <!--<outputDirectory>/webapps/</outputDirectory>-->
-      <!--<includes>-->
-        <!--<include>*</include>-->
-      <!--</includes>-->
-    <!--</fileSet>-->
+    <fileSet>
+      <directory>${basedir}/src/main/conf/</directory>
+      <outputDirectory>/lib/</outputDirectory>
+      <includes>
+        <include>*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${basedir}/src/main/webapps/</directory>
+      <outputDirectory>/lib/webapps</outputDirectory>
+      <includes>
+        <include>**/*</include>
+      </includes>
+    </fileSet>
   </fileSets>
 </assembly>

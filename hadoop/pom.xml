@@ -24,7 +24,7 @@
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
+      <artifactId>slf4j-log4j12</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -82,12 +82,13 @@
               <artifact>org.apache.hadoop:hadoop-core</artifact>
               <excludes>
                 <exclude>**/webapps/**</exclude>
+                <exclude>**/log4j.properties</exclude>
               </excludes>
             </filter>
           </filters>
           <transformers>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-              <mainClass>com.shopzilla.hadoop.testing.HadoopCLI</mainClass>
+              <mainClass>com.shopzilla.hadoop.testing.HadoopStandaloneCLI</mainClass>
             </transformer>
           </transformers>
         </configuration>

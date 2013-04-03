@@ -94,25 +94,27 @@ public class DFSCluster {
                 importHDFSDirectory(new Path(localRoot.getName()), localRoot);
             }
             return this;
-        }
-        catch (final IOException ex) {
+        } catch (final IOException ex) {
             throw new RuntimeException(ex);
         }
     }
 
     private void importHDFSDirectory(final Path hdfsRoot, final File file) throws IOException {
-        Path path = new Path(hdfsRoot, File.separator + localRoot.toURI().relativize(file.toURI()).getPath());
+        final Path path = new Path(hdfsRoot, File.separator + localRoot.toURI().relativize(file.toURI()).getPath());
         if (file.isDirectory()) {
             getFileSystem().mkdirs(path);
             getFileSystem().makeQualified(path);
-            for (File child : file.listFiles()) {
+            for (final File child : file.listFiles()) {
                 importHDFSDirectory(hdfsRoot, child);
             }
-        }
-        else {
+        } else {
             getFileSystem().copyFromLocalFile(false, true, new Path(file.getAbsolutePath()), path);
             getFileSystem().makeQualified(path);
         }
+    }
+
+    public String getHttpAddress() {
+        return "http://localhost:" + miniDFSCluster.getNameNode().getHttpAddress().getPort();
     }
 
     public FileSystem getFileSystem() {
@@ -134,14 +136,13 @@ public class DFSCluster {
 
     public void processPaths(final Path path, final Function<Path, Void> pathProcessor) throws IOException {
         if (miniDFSCluster.getFileSystem().exists(path)) {
-            FileStatus[] fileStatuses = miniDFSCluster.getFileSystem().listStatus(path);
-            for (FileStatus fileStatus : fileStatuses) {
+            final FileStatus[] fileStatuses = miniDFSCluster.getFileSystem().listStatus(path);
+            for (final FileStatus fileStatus : fileStatuses) {
                 if (!fileStatus.getPath().toUri().getPath().startsWith("_")) {
                     pathProcessor.apply(fileStatus.getPath());
                 }
             }
-        }
-        else {
+        } else {
             throw new IOException("Path does not exist: " + path);
         }
     }
@@ -152,17 +153,15 @@ public class DFSCluster {
                 if (!path.toUri().getPath().startsWith("_")) {
                     pathProcessor.apply(path);
                 }
-            }
-            else {
-                FileStatus[] fileStatuses = miniDFSCluster.getFileSystem().listStatus(path);
-                for (FileStatus fileStatus : fileStatuses) {
+            } else {
+                final FileStatus[] fileStatuses = miniDFSCluster.getFileSystem().listStatus(path);
+                for (final FileStatus fileStatus : fileStatuses) {
                     if (!fileStatus.getPath().toUri().getPath().startsWith("_")) {
                         processPathsRecursive(fileStatus.getPath(), pathProcessor);
                     }
                 }
             }
-        }
-        else {
+        } else {
             throw new IOException("Path does not exist: " + path);
         }
     }
@@ -172,17 +171,16 @@ public class DFSCluster {
             @Override
             public Void apply(Path path) {
                 try {
-                    FSDataInputStream in = miniDFSCluster.getFileSystem().open(path);
-                    LineIterator lineIterator = new LineIterator(new InputStreamReader(in));
+                    final FSDataInputStream in = miniDFSCluster.getFileSystem().open(path);
+                    final LineIterator lineIterator = new LineIterator(new InputStreamReader(in));
                     while (lineIterator.hasNext()) {
                         lineProcessor.apply(lineIterator.next());
                     }
                     lineIterator.close();
-                }
-                catch (Exception ex) {
+                    return null;
+                } catch (final Exception ex) {
                     throw new RuntimeException(ex);
                 }
-                return null;
             }
         };
         processPaths(path, new Function<Path, Void>() {
@@ -199,17 +197,16 @@ public class DFSCluster {
             @Override
             public Void apply(Path path) {
                 try {
-                    FSDataInputStream in = miniDFSCluster.getFileSystem().open(path);
-                    LineIterator lineIterator = new LineIterator(new InputStreamReader(in));
+                    final FSDataInputStream in = miniDFSCluster.getFileSystem().open(path);
+                    final LineIterator lineIterator = new LineIterator(new InputStreamReader(in));
                     while (lineIterator.hasNext()) {
                         lineProcessor.apply(lineIterator.next());
                     }
                     lineIterator.close();
-                }
-                catch (Exception ex) {
+                    return null;
+                } catch (final Exception ex) {
                     throw new RuntimeException(ex);
                 }
-                return null;
             }
         };
         processPathsRecursive(path, new Function<Path, Void>() {
@@ -224,7 +221,7 @@ public class DFSCluster {
     @PreDestroy
     public void stop() {
         try {
-            Thread shutdownThread = new Thread(new Runnable() {
+            final Thread shutdownThread = new Thread(new Runnable() {
 
                 @Override
                 public void run() {

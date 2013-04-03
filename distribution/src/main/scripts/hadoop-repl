@@ -1,2 +1,4 @@
+#!/bin/bash
+
 CWD=`dirname $0`
-java $JAVA_OPTS -jar $CWD/lib/hadoop-repl-*.jar $@
+java $JAVA_OPTS -cp $CWD/lib:$CWD/lib/* com.shopzilla.hadoop.HadoopREPL $@

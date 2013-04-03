@@ -29,7 +29,7 @@ import java.io.IOException;
  * @author Jeremy Lucas
  * @since 9/5/12
  */
-public class HadoopCLI {
+public class HadoopStandaloneCLI {
 
     private static final String DEFAULT_CORE_SITE_LOCATION = "/tmp/core-site.xml";
 
@@ -55,6 +55,8 @@ public class HadoopCLI {
                 }
             }));
             miniCluster.start();
+            System.out.println("DFS HTTP: " + miniCluster.getDfsCluster().getHttpAddress());
+            System.out.println("JobTracker HTTP: " + miniCluster.getJobTracker().getHttpAddress());
             new HadoopREPL(miniCluster.getConfiguration()).loop("hadoop-in-a-box> ");
         } catch (final IOException ex) {
             exitCode = 100;

@@ -59,8 +59,12 @@ public class MiniCluster {
 
     @PreDestroy
     public void stop() {
-        jobTracker.stop();
-        dfsCluster.stop();
+        if (jobTracker != null) {
+            jobTracker.stop();
+        }
+        if (dfsCluster != null) {
+            dfsCluster.stop();
+        }
         FileUtils.deleteQuietly(logDirectory);
         FileUtils.deleteQuietly(configurationFile);
     }

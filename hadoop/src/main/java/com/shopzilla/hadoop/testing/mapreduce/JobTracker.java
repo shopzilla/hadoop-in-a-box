@@ -77,10 +77,14 @@ public class JobTracker {
         return miniMrCluster;
     }
 
+    public String getHttpAddress() {
+        return "http://localhost:" + miniMrCluster.getJobTrackerPort();
+    }
+
     @PreDestroy
     public void stop() {
         try {
-            Thread shutdownThread = new Thread(new Runnable() {
+            final Thread shutdownThread = new Thread(new Runnable() {
 
                 @Override
                 public void run() {
@@ -89,8 +93,7 @@ public class JobTracker {
                             miniMrCluster.shutdown();
                             miniMrCluster = null;
                         }
-                    }
-                    catch (Exception ex) {
+                    } catch (final Exception ex) {
                         ex.printStackTrace();
                     }
                 }

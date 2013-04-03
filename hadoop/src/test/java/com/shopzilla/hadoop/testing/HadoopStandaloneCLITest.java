@@ -25,9 +25,9 @@ import org.junit.Test;
  * @author Jeremy Lucas
  * @since 9/5/12
  */
-public class HadoopCLITest {
+public class HadoopStandaloneCLITest {
     @Test
     public void testMain() throws Exception {
-        //HadoopCLI.main(null);
+        //HadoopStandaloneCLI.main(null);
     }
 }
