@@ -78,7 +78,7 @@ public class JobTracker {
     }
 
     public String getHttpAddress() {
-        return "http://localhost:" + miniMrCluster.getJobTrackerPort();
+        return "http://localhost:" + miniMrCluster.getJobTrackerRunner().getJobTracker().getInfoPort();
     }
 
     @PreDestroy
