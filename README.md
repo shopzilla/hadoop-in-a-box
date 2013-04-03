@@ -31,7 +31,7 @@ Hadoop-in-a-box comes with 2 different modes of use:
 This mode allows you to spin up an Hadoop DFS and MapReduce cluster for session-based usage--that is, the cluster will survive for the entire REPL session, but will shutdown and clean up upon exiting. This allows you to test and develop without the need of a full cluster, but is more long-lived than only using MiniMRCluster, as it allows you to interactively step through HDFS as your jobs are running.
 
 ```bash
-Usgae: ./hadoop-standalone [LOCAL HDFS LOCATION]
+Usgae: ./hadoop-standalone [LOCAL HDFS LOCATION] [core-site.xml OUTPUT LOCATION]
 ```
 
 The optional parameter ```[LOCAL HDFS LOCATION]``` should be used if you would like for a part of your local file system to be automatically replicated in the newly spun-up HDFS. For example, if I have a directory: ```/Users/jl/HDFS``` that looks like:
