@@ -20,18 +20,18 @@ import java.io.IOException;
  * @since 4/1/13
  */
 public class MiniCluster {
-    private static final String DEFAULT_CORE_SITE_LOCATION = "/tmp/core-site.xml";
-    private static final String DEFAULT_MR_LOGS_LOCATION = "/tmp/minimrcluster/logs";
+    public static final File DEFAULT_CORE_SITE = new File(System.getProperty("user.dir"), "core-site.xml");
+    public static final File DEFAULT_MR_LOGS = new File(System.getProperty("user.dir"), "minimrcluster/logs");
 
     private final File localRoot;
-    private final File logDirectory = new File(DEFAULT_MR_LOGS_LOCATION);
+    private final File logDirectory = DEFAULT_MR_LOGS;
     private final Configuration configuration;
     private final File configurationFile;
     private DFSCluster dfsCluster;
     private JobTracker jobTracker;
 
     public MiniCluster() {
-        this(null, new File(DEFAULT_CORE_SITE_LOCATION));
+        this(null, DEFAULT_CORE_SITE);
     }
 
     public MiniCluster(final File localRoot, final File configurationFile) {

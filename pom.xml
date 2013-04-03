@@ -18,9 +18,14 @@
 
   <modules>
     <module>distribution</module>
-    <module>hadoop</module>
+    <module>hadoop-standalone</module>
     <module>hadoop-repl</module>
   </modules>
+
+  <scm>
+    <connection>scm:git:ssh://git@github.com/shopzilla/hadoop-in-a-box.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/shopzilla/hadoop-in-a-box.git</developerConnection>
+  </scm>
 
   <properties>
     <junit.version>4.11</junit.version>

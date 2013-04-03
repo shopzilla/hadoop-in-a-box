@@ -31,13 +31,11 @@ import java.io.IOException;
  */
 public class HadoopStandaloneCLI {
 
-    private static final String DEFAULT_CORE_SITE_LOCATION = "/tmp/core-site.xml";
-
     public static void main(final String[] args) {
         int exitCode = 0;
         try {
             File localRoot = null;
-            File configurationFile = new File(DEFAULT_CORE_SITE_LOCATION);
+            File configurationFile = MiniCluster.DEFAULT_CORE_SITE;
             if (args.length >= 1) {
                 localRoot = new File(args[0]);
             }

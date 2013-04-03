@@ -88,7 +88,7 @@ public class DFSCluster {
     public DFSCluster start() {
         try {
             miniDFSCluster = new MiniDFSCluster(configuration, numberOfDataNodes, true, null);
-            buildDirectory = new File(miniDFSCluster.getDataDirectory()).getParentFile().getParentFile().getParentFile().getParentFile();
+            buildDirectory = new File(System.getProperty("user.dir"), "build");
             projectDirectory = buildDirectory.getParentFile();
             if (localRoot != null) {
                 importHDFSDirectory(new Path(localRoot.getName()), localRoot);
