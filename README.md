@@ -13,7 +13,7 @@ mvn clean install
 This will build a distributable tarball file under ```/path/to/project/distribution/target```. Untar the file using:
 
 ```bash
-tar xf distribution-file-name.tar.gz
+tar xf hadoop-in-a-box.tar.gz
 ```
 
 Then change directories to find the executable scripts for running the different Hadoop-in-a-box runtime modes:
@@ -31,10 +31,10 @@ Hadoop-in-a-box comes with 2 different modes of use:
 This mode allows you to spin up an Hadoop DFS and MapReduce cluster for session-based usage--that is, the cluster will survive for the entire REPL session, but will shutdown and clean up upon exiting. This allows you to test and develop without the need of a full cluster, but is more long-lived than only using MiniMRCluster, as it allows you to interactively step through HDFS as your jobs are running.
 
 ```bash
-Usgae: ./hadoop-standalone [LOCAL HDFS LOCATION] [core-site.xml OUTPUT LOCATION]
+Usage: ./hadoop-standalone [<LOCAL HDFS LOCATION>] [<core-site.xml OUTPUT LOCATION>]
 ```
 
-The optional parameter ```[LOCAL HDFS LOCATION]``` should be used if you would like for a part of your local file system to be automatically replicated in the newly spun-up HDFS. For example, if I have a directory: ```/Users/jl/HDFS``` that looks like:
+The optional parameter ```<LOCAL HDFS LOCATION>``` should be used if you would like for a part of your local file system to be automatically replicated in the newly spun-up HDFS. For example, if I have a directory: ```/Users/jl/HDFS``` that looks like:
 
 ```bash
 /Users/jl/HDFS/data
@@ -67,7 +67,7 @@ Note that after the cluster is built, you are then immediately plunged into a [H
 This mode is similar to the above, except that instead of spinning up a brand-new cluster, the REPL is pointed to an existing cluster:
 
 ```bash
-Usage: ./hadoop-repl /path/to/core-site.xml
+Usage: ./hadoop-repl </path/to/core-site.xml>
 ```
 
 After connecting to the remote cluster, you will then be started into a [Hadoop REPL](#the-repl)
