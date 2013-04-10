@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 public class MiniCluster {
     public static final File DEFAULT_CORE_SITE = new File(System.getProperty("user.dir"), "core-site.xml");
-    public static final File DEFAULT_MR_LOGS = new File(System.getProperty("user.dir"), "minimrcluster/logs");
+    public static final File DEFAULT_MR_LOGS = new File(System.getProperty("user.dir"), "minimrcluster-logs");
 
     private final File localRoot;
     private final File logDirectory = DEFAULT_MR_LOGS;
@@ -34,7 +34,7 @@ public class MiniCluster {
         this(null, DEFAULT_CORE_SITE);
     }
 
-    public MiniCluster(final File localRoot, final File configurationFile) {
+    public MiniCluster(final File configurationFile, final File localRoot) {
         this.configuration = new Configuration();
         this.configurationFile = configurationFile;
         this.localRoot = localRoot;

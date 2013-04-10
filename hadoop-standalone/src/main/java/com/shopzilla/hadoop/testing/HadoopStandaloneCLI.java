@@ -37,15 +37,15 @@ public class HadoopStandaloneCLI {
             File localRoot = null;
             File configurationFile = MiniCluster.DEFAULT_CORE_SITE;
             if (args.length >= 1) {
-                localRoot = new File(args[0]);
+                configurationFile = new File(args[0]);
             }
             if (args.length == 2) {
-                configurationFile = new File(args[1]);
+                localRoot = new File(args[1]);
             }
             if (args.length > 2) {
-                throw new REPL.ExitSignal(1, "Usage: ./hadoop-standalone [<local-root-directory>] [<path-to-hadoop-core-site-file>]");
+                throw new REPL.ExitSignal(1, "Usage: ./hadoop-standalone [<path-to-hadoop-core-site-file>] [<local-root-directory>]");
             }
-            final MiniCluster miniCluster = new MiniCluster(localRoot, configurationFile);
+            final MiniCluster miniCluster = new MiniCluster(configurationFile, localRoot);
             Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
                 @Override
                 public void run() {
