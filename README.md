@@ -13,7 +13,7 @@ mvn clean install
 This will build a distributable tarball file under ```/path/to/project/distribution/target```. Untar the file using:
 
 ```bash
-tar xf hadoop-in-a-box.tar.gz
+tar xf hadoop-in-a-box.tgz
 ```
 
 Then change directories to find the executable scripts for running the different Hadoop-in-a-box runtime modes:
