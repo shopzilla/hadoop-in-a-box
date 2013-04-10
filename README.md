@@ -80,9 +80,10 @@ The common piece between the above two modes of use is the custom REPL built aro
 
 Though there is already a CLI for HDFS and a shell script for invoking M/R jobs, these clearly have fallen short of some of today's more interactive programming utitlities. As such, the new custom Hadoop REPL has added the following features (with more to come!):
 * HDFS filename tab completion/navigation
-* An added "current-working-directory" concept that allows you to ```cd``` into a given directory
+* Interactively viewing real-time changes to the underlying HDFS state
 
 Some additional features currently under developement:
+* An added "current-working-directory" concept that allows you to ```cd``` into a given directory
 * M/R job controls and monitoring
 * Direct HDFS file editting
 * HDFS session-state saving (so you can run a job in one session, save the session, then re-run the REPL with the saved HDFS from the prior job run)
