@@ -23,9 +23,13 @@ import com.shopzilla.hadoop.repl.REPL;
 import com.shopzilla.hadoop.repl.SessionState;
 import jline.console.completer.FileNameCompleter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 import static com.shopzilla.hadoop.repl.commands.Call.call;
+import static java.lang.String.format;
 
 /**
  * @author Jeremy Lucas
@@ -36,7 +40,6 @@ public class SessionCommandProvider implements CommandProvider {
     private final Command QUIT_COMMAND = new Command() {
         @Override
         public void execute(final CommandInvocation call, final SessionState sessionState) throws REPL.ExitSignal {
-            sessionState.output("Disconnecting Hadoop REPL...");
             sessionState.shutdown();
         }
 
@@ -68,12 +71,17 @@ public class SessionCommandProvider implements CommandProvider {
             }
         })
         .put(call("save", new FileNameCompleter()), new Command() {
+
+            private final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+
             @Override
             public void execute(final CommandInvocation call, final SessionState sessionState) throws REPL.ExitSignal {
-                if (call.args.length != 1) {
-                    sessionState.outputUsage(this);
-                } else {
+                if (call.args.length == 0) {
+                    sessionState.saveClusterState(format("session-%s.tgz", DF.format(new Date())));
+                } else if (call.args.length == 1) {
                     sessionState.saveClusterState(call.args[0]);
+                } else {
+                    sessionState.outputUsage(this);
                 }
             }
 

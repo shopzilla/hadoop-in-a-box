@@ -46,10 +46,12 @@ public class SessionState {
     }
 
     public void saveClusterState(final String outputFileName) {
+        output("Saving current cluster state to file [%s]", outputFileName);
         clusterStateManager.serialize(new File(outputFileName));
     }
 
     public void loadClusterState(final String archiveFile) {
+        output("Loading cluster state from file [%s]", archiveFile);
         clusterStateManager.load(new File(archiveFile));
     }
 
@@ -70,6 +72,7 @@ public class SessionState {
     }
 
     public void shutdown() {
+        output("Disconnecting REPL");
         repl.shutdown();
     }
 
