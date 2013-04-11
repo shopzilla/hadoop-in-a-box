@@ -19,8 +19,8 @@
 
 package com.shopzilla.hadoop.testing;
 
-import com.shopzilla.hadoop.HadoopREPL;
-import com.shopzilla.hadoop.REPL;
+import com.shopzilla.hadoop.repl.HadoopREPL;
+import com.shopzilla.hadoop.repl.REPL;
 
 import java.io.File;
 import java.io.IOException;

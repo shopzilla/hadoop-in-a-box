@@ -16,20 +16,16 @@
  *  http://tech.shopzilla.com
  *
  */
+package com.shopzilla.hadoop.repl.commands;
 
-package com.shopzilla.hadoop.testing;
+import com.google.common.base.Function;
+import com.shopzilla.hadoop.repl.SessionState;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import java.util.Map;
 
 /**
  * @author Jeremy Lucas
- * @since 9/5/12
+ * @since 4/11/13
  */
-@Ignore
-public class HadoopStandaloneCLITest {
-    @Test
-    public void testMain() throws Exception {
-        HadoopStandaloneCLI.main(new String[0]);
-    }
+public interface CommandProvider extends Function<SessionState, Map<Call, Command>> {
 }

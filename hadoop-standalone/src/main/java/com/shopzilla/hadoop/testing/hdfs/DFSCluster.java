@@ -99,7 +99,7 @@ public class DFSCluster {
         }
     }
 
-    private void importHDFSDirectory(final Path hdfsRoot, final File file) throws IOException {
+    public void importHDFSDirectory(final Path hdfsRoot, final File file) throws IOException {
         final Path path = new Path(hdfsRoot, File.separator + localRoot.toURI().relativize(file.toURI()).getPath());
         if (file.isDirectory()) {
             getFileSystem().mkdirs(path);

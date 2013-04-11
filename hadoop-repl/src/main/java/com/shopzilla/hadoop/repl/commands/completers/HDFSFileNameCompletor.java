@@ -17,11 +17,11 @@
  *
  */
 
-package com.shopzilla.hadoop;
+package com.shopzilla.hadoop.repl.commands.completers;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import jline.Completor;
+import jline.console.completer.Completer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -37,18 +37,22 @@ import java.util.List;
  * @author Jeremy Lucas
  * @since 9/11/12
  */
-public class HDFSFileNameCompletor implements Completor {
+public class HDFSFileNameCompletor implements Completer {
 
     private final Path root;
     private final FileSystem fs;
 
-    public HDFSFileNameCompletor(final Configuration conf) throws IOException {
+    public HDFSFileNameCompletor(final Configuration conf) {
         this(conf, new Path("/"));
     }
 
-    public HDFSFileNameCompletor(final Configuration conf, final Path root) throws IOException {
-        fs = FileSystem.get(conf);
-        this.root = root;
+    public HDFSFileNameCompletor(final Configuration conf, final Path root) {
+        try {
+            this.fs = FileSystem.get(conf);
+            this.root = root;
+        } catch (final IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override

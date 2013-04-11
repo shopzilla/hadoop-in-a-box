@@ -16,20 +16,32 @@
  *  http://tech.shopzilla.com
  *
  */
+package com.shopzilla.hadoop.repl.display;
 
-package com.shopzilla.hadoop.testing;
-
-import org.junit.Ignore;
-import org.junit.Test;
+import java.text.DecimalFormat;
 
 /**
  * @author Jeremy Lucas
- * @since 9/5/12
+ * @since 4/11/13
  */
-@Ignore
-public class HadoopStandaloneCLITest {
-    @Test
-    public void testMain() throws Exception {
-        HadoopStandaloneCLI.main(new String[0]);
+public class ProgressBar {
+    private static final DecimalFormat DF = new DecimalFormat("##%");
+
+    protected final int total;
+
+    public ProgressBar(final int total) {
+        this.total = total;
+    }
+
+    public String progress(final int i) {
+        final StringBuilder sb = new StringBuilder("\r[");
+        for (int c = 0; c < i; c++) {
+            sb.append('=');
+        }
+        sb.append(">");
+        for (int c = i; c < total; c++) {
+            sb.append(' ');
+        }
+        return sb.append("] ").append(DF.format((double) i / total)).toString();
     }
 }

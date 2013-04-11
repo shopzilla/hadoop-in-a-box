@@ -27,6 +27,10 @@
       <artifactId>commons-lang</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
@@ -34,7 +38,6 @@
     <dependency>
       <groupId>jline</groupId>
       <artifactId>jline</artifactId>
-      <version>1.0</version>
     </dependency>
   </dependencies>
 
@@ -63,7 +66,7 @@
           <finalName>hadoop-repl-${project.version}</finalName>
           <transformers>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-              <mainClass>com.shopzilla.hadoop.HadoopREPL</mainClass>
+              <mainClass>com.shopzilla.hadoop.repl.HadoopREPL</mainClass>
             </transformer>
           </transformers>
         </configuration>

@@ -16,20 +16,20 @@
  *  http://tech.shopzilla.com
  *
  */
+package com.shopzilla.hadoop.repl.commands;
 
-package com.shopzilla.hadoop.testing;
-
-import org.junit.Ignore;
-import org.junit.Test;
+import java.util.Arrays;
 
 /**
  * @author Jeremy Lucas
- * @since 9/5/12
+ * @since 4/11/13
  */
-@Ignore
-public class HadoopStandaloneCLITest {
-    @Test
-    public void testMain() throws Exception {
-        HadoopStandaloneCLI.main(new String[0]);
+public class CommandInvocation {
+    public final String command;
+    public final String[] args;
+
+    public CommandInvocation(final String command, final String... args) {
+        this.command = command;
+        this.args = Arrays.copyOf(args, args.length);
     }
 }

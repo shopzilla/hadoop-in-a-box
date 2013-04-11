@@ -56,12 +56,12 @@
     <dependency>
       <groupId>com.shopzilla.opensource.hadoop</groupId>
       <artifactId>hadoop-standalone</artifactId>
-      <classifier>all</classifier>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.shopzilla.opensource.hadoop</groupId>
       <artifactId>hadoop-repl</artifactId>
-      <classifier>all</classifier>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 </project>
