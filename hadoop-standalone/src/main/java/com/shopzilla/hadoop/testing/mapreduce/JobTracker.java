@@ -37,7 +37,7 @@ public class JobTracker {
 
     public static class Builder {
         private String dfsNameNode;
-        private int numTaskTrackers = 1;
+        private int numTaskTrackers = 4;
 
         public Builder withNameNode(final String dfsNameNode) {
             this.dfsNameNode = dfsNameNode;

@@ -62,11 +62,12 @@ public class ClusterStateManager {
         }
     }
 
-    // TODO: Untargz the archive, then load in!
     public void load(final File archive) {
         try {
-            fs.delete(new Path("/"), true);
-            importHDFSDirectory(new Path("/"), archive, archive);
+            throw new UnsupportedOperationException("Not yet!");
+//            TODO: Untargz the archive, then load in!
+//            fs.delete(new Path("/"), true);
+//            importHDFSDirectory(new Path("/"), archive, archive);
         } catch (final Exception ex) {
             throw new RuntimeException(ex);
         }

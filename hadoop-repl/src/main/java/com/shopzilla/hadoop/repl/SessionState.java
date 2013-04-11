@@ -49,6 +49,10 @@ public class SessionState {
         clusterStateManager.serialize(new File(outputFileName));
     }
 
+    public void loadClusterState(final String archiveFile) {
+        clusterStateManager.load(new File(archiveFile));
+    }
+
     public void output(final String message, final Object... args) {
         repl.output(message, args);
     }

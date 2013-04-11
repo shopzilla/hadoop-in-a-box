@@ -92,7 +92,7 @@ public class SessionCommandProvider implements CommandProvider {
                 if (call.args.length != 1) {
                     sessionState.outputUsage(this);
                 } else {
-                    sessionState.saveClusterState(call.args[0]);
+                    sessionState.loadClusterState(call.args[0]);
                 }
             }
 
