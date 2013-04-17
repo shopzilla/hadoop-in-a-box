@@ -49,7 +49,7 @@ public class FSShellCommandProvider implements CommandProvider {
             .add(call("cp", new HDFSFileNameCompletor(sessionState.configuration), new HDFSFileNameCompletor(sessionState.configuration)))
             .add(call("rm", new HDFSFileNameCompletor(sessionState.configuration)))
             .add(call("rmr", new HDFSFileNameCompletor(sessionState.configuration)))
-//            .add("expunge")
+            .add(call("expunge"))
             .add(call("put", new FileNameCompleter(), new HDFSFileNameCompletor(sessionState.configuration)))
             .add(call("cat", new HDFSFileNameCompletor(sessionState.configuration)))
             .add(call("text", new HDFSFileNameCompletor(sessionState.configuration)))

@@ -146,11 +146,12 @@ public class HadoopREPL extends REPL {
         int exitCode = 0;
 
         try {
-            if (args.length < 1) {
+            final Configuration configuration = new Configuration(true);
+            if (args.length == 1) {
+                configuration.addResource(new File(args[0]).toURI().toURL());
+            } else if (args.length > 1) {
                 throw new ExitSignal(1, "Usage: ./hadoop-repl <path-to-hadoop-core-site-file>");
             }
-            final Configuration configuration = new Configuration(true);
-            configuration.addResource(new File(args[0]).toURI().toURL());
             new HadoopREPL(configuration).loop("hadoop> ");
         } catch (final ExitSignal ex) {
             System.err.println(ex.getMessage());

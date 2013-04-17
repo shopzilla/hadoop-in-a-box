@@ -69,8 +69,10 @@ Note that after the cluster is built, you are then immediately plunged into a [H
 This mode is similar to the above, except that instead of spinning up a brand-new cluster, the REPL is pointed to an existing cluster:
 
 ```bash
-Usage: ./hadoop-repl </path/to/core-site.xml>
+Usage: ./hadoop-repl [</path/to/core-site.xml>]
 ```
+
+Note that you must either have the ```$HADOOP_CONF_DIR``` environment variable set or you must specify the path to your core-site.xml in order to run this mode.
 
 After connecting to the remote cluster, you will then be started into a [Hadoop REPL](#the-repl)
 
