@@ -82,9 +82,7 @@ public abstract class REPL {
         while (!shutdown) {
             try {
                 final String line = read(prompt);
-                popHistory();
                 evaluate(line);
-                pushHistory(line);
             } catch (final Exception ex) {
                 if (ex instanceof ExitSignal) {
                     throw (ExitSignal) ex;
@@ -100,7 +98,11 @@ public abstract class REPL {
     }
 
     protected CharSequence popHistory() {
-        return consoleReader.getHistory().removeLast();
+        if (consoleReader.getHistory().isEmpty()) {
+            return null;
+        } else {
+            return consoleReader.getHistory().removeLast();
+        }
     }
 
     protected void pushHistory(final String command) {

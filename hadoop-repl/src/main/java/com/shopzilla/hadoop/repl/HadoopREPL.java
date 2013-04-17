@@ -124,17 +124,21 @@ public class HadoopREPL extends REPL {
 
     @Override
     protected void evaluate(final String input) throws ExitSignal {
+        popHistory();
         final Iterable<String> inputParts = ARG_SPLITTER.limit(2).split(input);
-        final String command = Iterables.get(inputParts, 0).toLowerCase();
-        if (command.isEmpty()) {
+        if (Iterables.isEmpty(inputParts)) {
              // Do nothing
-        } else if (commandMappings.containsKey(call(command))) {
-            commandMappings.get(call(command)).execute(
-                new CommandInvocation(command, Iterables.toArray(ARG_SPLITTER.split(Iterables.get(inputParts, 1, "")), String.class)),
-                sessionState
-            );
         } else {
-            output("Unknown command \"%s\"", command);
+            final String command = Iterables.get(inputParts, 0).toLowerCase();
+            if (commandMappings.containsKey(call(command))) {
+                commandMappings.get(call(command)).execute(
+                    new CommandInvocation(command, Iterables.toArray(ARG_SPLITTER.split(Iterables.get(inputParts, 1, "")), String.class)),
+                    sessionState
+                );
+            } else {
+                output("Unknown command \"%s\"", command);
+            }
+            pushHistory(input);
         }
     }
 
