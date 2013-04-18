@@ -25,11 +25,19 @@ import java.util.Arrays;
  * @since 4/11/13
  */
 public class CommandInvocation {
-    public final String command;
-    public final String[] args;
+    protected final String command;
+    protected final String[] args;
 
     public CommandInvocation(final String command, final String... args) {
         this.command = command;
         this.args = Arrays.copyOf(args, args.length);
+    }
+
+    public String command() {
+        return command;
+    }
+
+    public String[] args() {
+        return Arrays.copyOf(args, args.length);
     }
 }

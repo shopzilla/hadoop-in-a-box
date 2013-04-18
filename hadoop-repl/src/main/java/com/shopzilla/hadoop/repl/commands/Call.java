@@ -29,9 +29,9 @@ import java.util.Arrays;
  * @since 4/11/13
  */
 public class Call {
-    public final Completer[] completers;
+    protected final Completer[] completers;
 
-    public final String commandName;
+    protected final String commandName;
 
     public Call(final String commandName, final Completer... completers) {
         this.commandName = commandName;
@@ -43,9 +43,18 @@ public class Call {
         return new Call(commandName, completers);
     }
 
+    public String commandName() {
+        return commandName;
+    }
+
+    public Completer[] completers() {
+        return completers;
+    }
+
     @Override
     public boolean equals(final Object o) {
-        return o instanceof Call && commandName.equals(((Call) o).commandName);
+        return
+            o instanceof Call && commandName.equals(((Call) o).commandName);
     }
 
     @Override

@@ -39,34 +39,34 @@ public class FSShellCommandProvider implements CommandProvider {
     @Override
     public Map<Call, Command> apply(final SessionState sessionState) {
         final Iterable<Call> REPL_COMMANDS = ImmutableSet.<Call>builder()
-            .add(call("ls", new HDFSFileNameCompletor(sessionState.configuration)))
-            .add(call("lsr", new HDFSFileNameCompletor(sessionState.configuration)))
-            .add(call("df", new HDFSFileNameCompletor(sessionState.configuration)))
-            .add(call("du", new HDFSFileNameCompletor(sessionState.configuration)))
-            .add(call("dus", new HDFSFileNameCompletor(sessionState.configuration)))
-            .add(call("count", new HDFSFileNameCompletor(sessionState.configuration)))
-            .add(call("mv", new HDFSFileNameCompletor(sessionState.configuration), new HDFSFileNameCompletor(sessionState.configuration)))
-            .add(call("cp", new HDFSFileNameCompletor(sessionState.configuration), new HDFSFileNameCompletor(sessionState.configuration)))
-            .add(call("rm", new HDFSFileNameCompletor(sessionState.configuration)))
-            .add(call("rmr", new HDFSFileNameCompletor(sessionState.configuration)))
+            .add(call("ls", new HDFSFileNameCompletor(sessionState.configuration())))
+            .add(call("lsr", new HDFSFileNameCompletor(sessionState.configuration())))
+            .add(call("df", new HDFSFileNameCompletor(sessionState.configuration())))
+            .add(call("du", new HDFSFileNameCompletor(sessionState.configuration())))
+            .add(call("dus", new HDFSFileNameCompletor(sessionState.configuration())))
+            .add(call("count", new HDFSFileNameCompletor(sessionState.configuration())))
+            .add(call("mv", new HDFSFileNameCompletor(sessionState.configuration()), new HDFSFileNameCompletor(sessionState.configuration())))
+            .add(call("cp", new HDFSFileNameCompletor(sessionState.configuration()), new HDFSFileNameCompletor(sessionState.configuration())))
+            .add(call("rm", new HDFSFileNameCompletor(sessionState.configuration())))
+            .add(call("rmr", new HDFSFileNameCompletor(sessionState.configuration())))
             .add(call("expunge"))
-            .add(call("put", new FileNameCompleter(), new HDFSFileNameCompletor(sessionState.configuration)))
-            .add(call("cat", new HDFSFileNameCompletor(sessionState.configuration)))
-            .add(call("text", new HDFSFileNameCompletor(sessionState.configuration)))
-            .add(call("copyToLocal", new HDFSFileNameCompletor(sessionState.configuration), new FileNameCompleter()))
-            .add(call("moveToLocal", new HDFSFileNameCompletor(sessionState.configuration), new FileNameCompleter()))
-            .add(call("mkdir", new HDFSFileNameCompletor(sessionState.configuration)))
+            .add(call("put", new FileNameCompleter(), new HDFSFileNameCompletor(sessionState.configuration())))
+            .add(call("cat", new HDFSFileNameCompletor(sessionState.configuration())))
+            .add(call("text", new HDFSFileNameCompletor(sessionState.configuration())))
+            .add(call("copyToLocal", new HDFSFileNameCompletor(sessionState.configuration()), new FileNameCompleter()))
+            .add(call("moveToLocal", new HDFSFileNameCompletor(sessionState.configuration()), new FileNameCompleter()))
+            .add(call("mkdir", new HDFSFileNameCompletor(sessionState.configuration())))
 //            .add(call("setrep"))
-            .add(call("touchz", new HDFSFileNameCompletor(sessionState.configuration)))
-            .add(call("stat", new HDFSFileNameCompletor(sessionState.configuration)))
-            .add(call("tail", new HDFSFileNameCompletor(sessionState.configuration)))
+            .add(call("touchz", new HDFSFileNameCompletor(sessionState.configuration())))
+            .add(call("stat", new HDFSFileNameCompletor(sessionState.configuration())))
+            .add(call("tail", new HDFSFileNameCompletor(sessionState.configuration())))
 //            .add(call("chmod"))
 //            .add(call("chown"))
 //            .add(call("chgrp"))
-            .add(call("copyFromLocal", new FileNameCompleter(), new HDFSFileNameCompletor(sessionState.configuration)))
-            .add(call("moveFromLocal", new FileNameCompleter(), new HDFSFileNameCompletor(sessionState.configuration)))
-            .add(call("get", new HDFSFileNameCompletor(sessionState.configuration), new FileNameCompleter()))
-            .add(call("getmerge", new HDFSFileNameCompletor(sessionState.configuration), new FileNameCompleter()))
+            .add(call("copyFromLocal", new FileNameCompleter(), new HDFSFileNameCompletor(sessionState.configuration())))
+            .add(call("moveFromLocal", new FileNameCompleter(), new HDFSFileNameCompletor(sessionState.configuration())))
+            .add(call("get", new HDFSFileNameCompletor(sessionState.configuration()), new FileNameCompleter()))
+            .add(call("getmerge", new HDFSFileNameCompletor(sessionState.configuration()), new FileNameCompleter()))
             .build();
         final ImmutableMap.Builder<Call, Command> commandMappingBuilder = new ImmutableMap.Builder<Call, Command>();
         for (final Call call : REPL_COMMANDS) {
@@ -74,7 +74,7 @@ public class FSShellCommandProvider implements CommandProvider {
                 @Override
                 public void execute(final CommandInvocation call, final SessionState sessionState) {
                     try {
-                        new FsShell(sessionState.configuration).run(Joiner.on(" ").join("-" + call.command, Joiner.on(" ").join(call.args)).split(" "));
+                        new FsShell(sessionState.configuration()).run(Joiner.on(" ").join("-" + call.command, Joiner.on(" ").join(call.args)).split(" "));
                     } catch (final Exception ex) {
                         sessionState.error(ex);
                     }

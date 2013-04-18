@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import static com.shopzilla.hadoop.repl.commands.Call.call;
-import static java.lang.String.format;
 
 /**
  * @author Jeremy Lucas
@@ -59,6 +58,20 @@ public class HadoopREPL extends REPL {
         resetCompletors();
     }
 
+    public HadoopREPL(final Configuration configuration, final SessionState sessionState) throws ExitSignal {
+        this.configuration = configuration;
+        this.sessionState = sessionState;
+        this.commandMappings = buildCommandMappings();
+        resetCompletors();
+    }
+
+    public HadoopREPL(final Configuration configuration, final SessionState sessionState, final Map<Call, Command> commandMappings) throws ExitSignal {
+        this.configuration = configuration;
+        this.sessionState = sessionState;
+        this.commandMappings = commandMappings;
+        resetCompletors();
+    }
+
     protected Map<Call, Command> buildCommandMappings() {
         final Map<Call, Command> commands = ImmutableMap.<Call, Command>builder()
             .putAll(new SessionCommandProvider().apply(sessionState))
@@ -72,23 +85,23 @@ public class HadoopREPL extends REPL {
                     return Sets.newTreeSet(Maps.transformEntries(commandMappings, new Maps.EntryTransformer<Call, Command, String>() {
                         @Override
                         public String transformEntry(final Call key, final Command value) {
-                            return key.commandName;
+                            return key.commandName();
                         }
                     }).values());
                 }
             })), new Command() {
                 @Override
                 public void execute(final CommandInvocation call, final SessionState sessionState) throws REPL.ExitSignal {
-                    if (call.args.length != 1) {
+                    if (call.args().length != 1) {
                         sessionState.output("Usage: help [command]");
                     } else {
-                        final String command = call.args[0];
+                        final String command = call.args()[0];
                         if (commandMappings.containsKey(call(command))) {
                             final Usage usage = commandMappings.get(call(command)).usage(sessionState);
-                            sessionState.output(format("Displaying help for \"%s\":\n", command));
+                            sessionState.output("Displaying help for \"%s\":\n", command);
                             sessionState.outputUsage(usage);
                         } else {
-                            sessionState.error(format("Unknown command \"%s\"", command));
+                            sessionState.error("Unknown command \"%s\"", command);
                         }
                     }
                 }
@@ -113,8 +126,8 @@ public class HadoopREPL extends REPL {
                 public Completer apply(final Call input) {
                     return new ArgumentCompleter(
                         ImmutableList.<Completer>builder()
-                            .add(new StringsCompleter(input.commandName))
-                            .add(input.completers)
+                            .add(new StringsCompleter(input.commandName()))
+                            .add(input.completers())
                             .build()
                     );
                 }
@@ -136,10 +149,18 @@ public class HadoopREPL extends REPL {
                     sessionState
                 );
             } else {
-                output("Unknown command \"%s\"", command);
+                sessionState.output("Unknown command \"%s\"", command);
             }
             pushHistory(input);
         }
+    }
+
+    protected SessionState sessionState() {
+        return sessionState;
+    }
+
+    protected Map<Call, Command> commandMappings() {
+        return commandMappings;
     }
 
     public static void main(final String[] args) {

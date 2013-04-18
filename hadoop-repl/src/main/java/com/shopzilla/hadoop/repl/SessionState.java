@@ -33,7 +33,7 @@ public class SessionState {
 
     protected static final Joiner SPACE_JOINER = Joiner.on(' ').skipNulls();
 
-    public final Configuration configuration;
+    protected final Configuration configuration;
 
     private final REPL repl;
 
@@ -90,5 +90,9 @@ public class SessionState {
 
     public void outputUsage(final Command.Usage usage) {
         outputColumns(1, usage.command, SPACE_JOINER.join(usage.arguments), usage.description);
+    }
+
+    public Configuration configuration() {
+        return configuration;
     }
 }
