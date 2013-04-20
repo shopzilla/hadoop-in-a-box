@@ -19,17 +19,23 @@
 
 package com.shopzilla.hadoop.testing;
 
-import org.junit.Ignore;
+import org.apache.hadoop.fs.Path;
 import org.junit.Test;
+
+import java.io.File;
+import java.util.Arrays;
 
 /**
  * @author Jeremy Lucas
  * @since 9/5/12
  */
-@Ignore
+//@Ignore
 public class HadoopStandaloneCLITest {
     @Test
     public void testMain() throws Exception {
-        HadoopStandaloneCLI.main(new String[0]);
+        final MiniCluster cluster = new MiniCluster(new File("/tmp/core-site.xml"), null);
+        cluster.start();
+        System.out.println(Arrays.toString(cluster.getDfsCluster().getFileSystem().listStatus(new Path("/"))));
+        cluster.stop();
     }
 }

@@ -64,7 +64,7 @@ public class MiniCluster {
             .start();
 
         jobTracker = JobTracker.builder()
-            .withNameNode(dfsCluster.getFileSystem().getUri().toString())
+            .usingConfiguration(configuration)
             .build()
             .start();
 
