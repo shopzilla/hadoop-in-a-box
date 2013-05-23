@@ -20,6 +20,7 @@
 package com.shopzilla.hadoop.testing;
 
 import org.apache.hadoop.fs.Path;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -29,7 +30,7 @@ import java.util.Arrays;
  * @author Jeremy Lucas
  * @since 9/5/12
  */
-//@Ignore
+@Ignore
 public class HadoopStandaloneCLITest {
     @Test
     public void testMain() throws Exception {

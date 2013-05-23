@@ -20,10 +20,8 @@
 package com.shopzilla.hadoop.testing.mapreduce;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.mapred.MiniMRClientCluster;
-import org.apache.hadoop.mapred.MiniMRCluster;
-import org.apache.hadoop.mapred.MiniMRClusterAdapter;
+import org.apache.hadoop.mapred.MiniMRClientClusterFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -36,7 +34,7 @@ import java.io.IOException;
 public class JobTracker {
 
     private final Configuration configuration;
-    private MiniMRCluster miniMrCluster;
+    private MiniMRClientCluster miniMrCluster;
 
     public static class Builder {
         private Configuration configuration;
@@ -62,19 +60,17 @@ public class JobTracker {
     @PostConstruct
     public JobTracker start() {
         try {
-            miniMrCluster = new MiniMRCluster(60000, 60001, 4, FileSystem.get(configuration).getUri().toString(), 4);
+            MiniMRClientClusterFactory.create(JobTracker.class, 4, configuration);
+            miniMrCluster = MiniMRClientClusterFactory.create(JobTracker.class, 4, configuration);
+            miniMrCluster.start();
             return this;
         } catch (final IOException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    public MiniMRClientCluster getMiniMrCluster() {
-        return new MiniMRClusterAdapter(miniMrCluster);
-    }
-
     public String getHttpAddress() {
-        return "http://localhost:" + "?";
+        return "";
     }
 
     @PreDestroy
@@ -86,7 +82,7 @@ public class JobTracker {
                 public void run() {
                     try {
                         if (miniMrCluster != null) {
-                            miniMrCluster.shutdown();
+                            miniMrCluster.stop();
                             miniMrCluster = null;
                         }
                     } catch (final Exception ex) {
